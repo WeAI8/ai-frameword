@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoTask // Zaman Odaklı Akıllı Görev Yöneticisi</title>
+    <meta name="description" content="ChronoTask, zaman aralıklarını ve günlerini kartlar üzerinde dinamik durum renkleriyle takip eden modern ve akıllı bir Todo uygulamasıdır.">
+    <!-- Google Fonts Entegrasyonu -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stil Bağlantısı -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Başlık Bölümü -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">⏳</span>
+                <h1 id="main-title">ChronoTask</h1>
+            </div>
+            <p class="subtitle">Zaman odaklı görevlerinizi dinamik durum renkleriyle yerel olarak yönetin.</p>
+        </header>
+
+        <!-- Görev Giriş Formu (Analist & Mimar Planına Uygun) -->
+        <section class="form-section">
+            <form id="todo-form" autocomplete="off">
+                <div class="form-group full-width">
+                    <label for="task-name">Görev Adı</label>
+                    <input type="text" id="task-name" placeholder="Örn: Haftalık Proje İnceleme Toplantısı" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-date">Tarih</label>
+                        <input type="date" id="task-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-start-time">Başlangıç Saati</label>
+                        <input type="time" id="task-start-time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-end-time">Bitiş Saati</label>
+                        <input type="time" id="task-end-time" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="add-task-btn" class="submit-btn">
+                    <span>Görev Ekle</span>
+                    <span class="btn-icon">✚</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- İstatistik ve Durum Özeti -->
+        <section class="status-summary">
+            <div class="summary-card status-overdue">
+                <span class="count-value" id="count-overdue">0</span>
+                <span class="count-label">Günü Geçenler</span>
+            </div>
+            <div class="summary-card status-active">
+                <span class="count-value" id="count-active">0</span>
+                <span class="count-label">Vakti Gelmeyenler</span>
+            </div>
+            <div class="summary-card status-completed">
+                <span class="count-value" id="count-completed">0</span>
+                <span class="count-label">Bitenler</span>
+            </div>
+        </section>
+
+        <!-- Görev Kartları Listesi -->
+        <main class="tasks-section">
+            <div class="section-header">
+                <h2>Görev Kartlarım</h2>
+                <span class="live-indicator"><span class="dot"></span>Canlı Takip Aktif</span>
+            </div>
+            
+            <!-- Kart Grid Alanı -->
+            <div id="tasks-grid" class="tasks-grid">
+                <!-- Javascript tarafından doldurulacaktır -->
+            </div>
+
+            <!-- Boş Durum Şablonu -->
+            <div id="empty-state" class="empty-state">
+                <div class="empty-icon">📂</div>
+                <p>Henüz planlanmış bir görev bulunmuyor.</p>
+                <p class="empty-sub">Yeni bir görev ekleyerek zamanınızı yönetmeye başlayın!</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 ChronoTask. Tüm verileriniz tarayıcınızın yerel depolama alanında saklanır.</p>
+        </footer>
+    </div>
+
+    <!-- JS Mantığı -->
+    <script src="app.js"></script>
+</body>
+</html>

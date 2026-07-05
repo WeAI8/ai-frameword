@@ -1,0 +1,461 @@
+/* ==========================================================================
+   CHRONOTASK MÜKEMMEL CSS TASARIMI
+   ========================================================================== */
+
+/* Temel Ayarlar ve Değişkenler */
+:root {
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Renk Paleti (HSL) */
+    --bg-app: hsl(225, 25%, 9%);
+    --bg-card: hsla(220, 20%, 14%, 0.6);
+    --bg-card-hover: hsla(220, 20%, 18%, 0.8);
+    
+    --border-glass: hsla(220, 20%, 25%, 0.3);
+    --border-glass-hover: hsla(220, 20%, 35%, 0.5);
+
+    --text-primary: hsl(210, 20%, 95%);
+    --text-secondary: hsl(215, 15%, 70%);
+    --text-muted: hsl(215, 10%, 50%);
+
+    /* Durum Renkleri */
+    --color-overdue: hsl(355, 75%, 60%);       /* Kırmızı */
+    --color-overdue-bg: hsla(355, 75%, 60%, 0.1);
+    
+    --color-active: hsl(215, 15%, 60%);        /* Gri/Füme */
+    --color-active-bg: hsla(215, 15%, 60%, 0.08);
+    
+    --color-completed: hsl(145, 65%, 45%);     /* Yeşil */
+    --color-completed-bg: hsla(145, 65%, 45%, 0.1);
+
+    --accent-glow: hsla(225, 80%, 60%, 0.4);
+    --accent-color: hsl(225, 80%, 65%);
+}
+
+/* Sayfa Sıfırlama */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(225,39%,10%,1) 0, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(225,80%,60%,0.05) 0, transparent 70%);
+    background-attachment: fixed;
+}
+
+/* Ana Konteyner */
+.app-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Header */
+.app-header {
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.logo-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+/* Form Kartı (Glassmorphic) */
+.form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    transition: border-color 0.3s ease;
+}
+
+.form-section:hover {
+    border-color: var(--border-glass-hover);
+}
+
+#todo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"] {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Buton */
+.submit-btn {
+    background: linear-gradient(135deg, var(--accent-color) 0%, hsl(240, 80%, 60%) 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px 0 var(--accent-glow);
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 var(--accent-glow);
+    filter: brightness(1.1);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* İstatistik Özeti */
+.status-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    backdrop-filter: blur(12px);
+}
+
+.count-value {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.count-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.status-overdue .count-value { color: var(--color-overdue); }
+.status-active .count-value { color: var(--color-active); }
+.status-completed .count-value { color: var(--color-completed); }
+
+/* Görev Kartları Bölümü */
+.tasks-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-completed);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px var(--color-completed);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* Görev Grid ve Kartları */
+.tasks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .tasks-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.task-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.task-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: var(--border-glass-hover);
+    box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Kart Durum Tasarımları */
+.task-card.overdue {
+    border-left: 3px solid var(--color-overdue);
+    background: linear-gradient(135deg, var(--bg-card) 70%, var(--color-overdue-bg) 100%);
+}
+.task-card.overdue::before { background-color: var(--color-overdue); }
+
+.task-card.active {
+    border-left: 3px solid var(--color-active);
+    background: linear-gradient(135deg, var(--bg-card) 70%, var(--color-active-bg) 100%);
+}
+.task-card.active::before { background-color: var(--color-active); }
+
+.task-card.completed {
+    border-left: 3px solid var(--color-completed);
+    background: linear-gradient(135deg, var(--bg-card) 70%, var(--color-completed-bg) 100%);
+}
+.task-card.completed::before { background-color: var(--color-completed); }
+
+/* Kart İçeriği */
+.task-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.task-card.completed .task-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.task-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.task-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge {
+    align-self: flex-start;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.task-card.overdue .status-badge {
+    background-color: var(--color-overdue-bg);
+    color: var(--color-overdue);
+}
+.task-card.active .status-badge {
+    background-color: var(--color-active-bg);
+    color: var(--color-active);
+}
+.task-card.completed .status-badge {
+    background-color: var(--color-completed-bg);
+    color: var(--color-completed);
+}
+
+/* Kart Aksiyonları */
+.task-actions {
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid var(--border-glass);
+    padding-top: 14px;
+}
+
+.action-btn {
+    flex: 1;
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-complete {
+    background-color: var(--color-completed-bg);
+    color: var(--color-completed);
+}
+.btn-complete:hover {
+    background-color: var(--color-completed);
+    color: white;
+}
+
+.btn-delete {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+}
+.btn-delete:hover {
+    background-color: var(--color-overdue);
+    color: white;
+}
+
+/* Boş Durum & Alt Bilgi */
+.empty-state {
+    background: var(--bg-card);
+    border: 1px dashed var(--border-glass);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+}
+
+.empty-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.app-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 20px;
+}
