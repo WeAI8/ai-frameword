@@ -3,25 +3,25 @@
 ---
 
 ## 1. Amaç (Purpose)
-Geliştirilen kodların projenin katman sınırlarını, bağımlılık yönlerini ve yapısal mimarisini bozmasını (drift/erozyon) engellemek.
+Geliştirilen kodların projenin katman sınırlarını, bağımlılık yönlerini ve yapısal mimarisini bozmasını (drift/erozyon) ArchUnit gibi kodlaştırılmış testlerle engellemek.
 
 ---
 
 ## 2. Sorumluluklar (Responsibilities)
-*   Katman sınırlarının ihlal edilip edilmediğini denetlemek (Örn: Katman baypası).
-*   Sınıflar arası dairesel bağımlılıkları (circular dependencies) taramak.
-*   Entity sızmalarını ve DTO kurallarını doğrulamak.
+*   Katman sınırlarının ihlal edilip edilmediğini denetlemek.
+*   Mimari kuralları doğal dil yerine otomatik birim testlerine (Java'da ArchUnit, JS'de dependency-cruiser vb.) dönüştüren denetimleri çalıştırmak.
+*   İhlal durumunda acil rollback/recovery akışını tetiklemek.
 
 ---
 
 ## 3. Girdiler (Inputs)
 *   Önerilen kod değişiklikleri taslağı.
-*   `core/architecture.md` mimari kuralları.
+*   ArchUnit veya benzeri mimari test sonuçları.
 
 ---
 
 ## 4. Çıktılar (Outputs)
-*   Mimari Uyum Raporu.
+*   Mimari Uyum Skoru.
 *   İhlal durumunda `OnArchitectureViolation` olayı.
 
 ---
@@ -33,16 +33,16 @@ Geliştirilen kodların projenin katman sınırlarını, bağımlılık yönleri
 ---
 
 ## 6. Kurallar (Rules)
-*   **Katman Sınırı Geçilemez**: Alt katmanlar üst katmanları kesinlikle çağıramaz (Örn: Service -> Controller import edilemez).
-*   **Entity İzolasyonu**: Veritabanı entity sınıfları sadece veri katmanında kalmalı, UI veya API controller uçlarına sızdırılmamalıdır.
+*   **Deterministik Test Zorunluluğu**: Mimari kurallar doğal dil yönlendirmeleri ile değil, mutlaka kod olarak yazılmış otomatik birim testleri (ArchUnit kuralları) üzerinden doğrulanmalıdır.
+    *   *Kural*: Arayüz katmanı veri erişim katmanına doğrudan bağımlı olamaz (`classes().that().resideInAPackage("..controller..").should().onlyHaveDependenciesInAnyPackage("..service..")`).
+    *   *Kural*: Domain Core katmanı dış dünyaya ve adaptörlere bağımlılık içeremez.
 
 ---
 
 ## 7. Hata Durumları (Failure Cases)
-*   *Mimari İhlal*: İhlal tespit edildiğinde `metrics/architecture-score.md` puanı düşürülür, kodlama durdurulur ve acil rollback tetiklenir.
+*   *Mimari Aşınma*: ArchUnit testleri başarısız olursa, kodlama durdurulur, `OnArchitectureViolation` tetiklenir, risk puanı 10 yapılır ve plan revizyon döngüsüne girilir.
 
 ---
 
 ## 8. Örnekler (Examples)
-*   *İhlal*: Geliştiricinin `OrderController` içine doğrudan `OrderRepository` enjekte etmeye çalışması (Katman Baypası).
-*   *Aksiyon*: Kayma koruyucu bunu engeller ve orkestratöre ihlal bildirir.
+*   *ArchUnit Örneği*: `noClasses().that().resideInAPackage("..service..").should().dependOnClassesThat().resideInAPackage("..controller..")` kuralının test olarak koşturulması.

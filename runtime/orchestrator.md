@@ -3,27 +3,26 @@
 ---
 
 ## 1. Amaç (Purpose)
-Ajanın tüm karar alma, doğrulama ve kodlama süreçlerini koordine etmek; OODA Loop döngülerini ve metrik bazlı rollback (geri alma) adımlarını yönetmek.
+Ajanın tüm karar alma, doğrulama ve kodlama süreçlerini LangGraph ve DSPy hibrit yapısıyla koordine etmek; OODA Loop döngülerini, Arize Phoenix gözlemlenebilirlik kontrollerini ve rollback adımlarını yönetmek.
 
 ---
 
 ## 2. Sorumluluklar (Responsibilities)
-*   Düşünme işlem hattı ve OODA Loop geçişlerini çalıştırmak.
-*   Aktif metriklerden gelen girdilere göre rollback veya recovery tetiklemek.
-*   Loop Guard (iterasyon koruyucusu) sayacını yönetmek.
+*   **LangGraph Orkestrasyonu**: Durum korumalı (stateful) iş akışlarını, döngülü graf yapılarını, onay adımlarını ve orkestrasyonu yönetmek.
+*   **DSPy Optimizasyonu**: Grafik üzerindeki her bir LLM çağrısının (node) DSPy modülleri olarak yapılandırılmasını ve istemlerin (prompts) otomatik optimize edilmesini denetlemek.
+*   **Arize Phoenix Entegrasyonu**: OpenTelemetry standartlarında çevrimiçi değerlendirme (online evaluation) yaparak groundedness, bağlam doğruluğu ve halüsinasyon durumlarını izlemek.
 
 ---
 
 ## 3. Girdiler (Inputs)
-*   Yaşam döngüsü durumları (`runtime/lifecycle.md`).
-*   Metrik sonuçları (`metrics/`).
-*   Olay bildirimleri (`runtime/events.md`).
+*   Durum grafı geçiş parametreleri.
+*   Arize Phoenix ve OpenTelemetry izleme (trace) verileri.
 
 ---
 
 ## 4. Çıktılar (Outputs)
-*   Çalıştırma ve duraklatma sinyalleri.
-*   Rollback/Recovery komutları.
+*   LangGraph durum güncellemeleri.
+*   Rollback ve kurtarma sinyalleri.
 
 ---
 
@@ -35,16 +34,15 @@ Ajanın tüm karar alma, doğrulama ve kodlama süreçlerini koordine etmek; OOD
 ---
 
 ## 6. Kurallar (Rules)
-*   **Metrik Güdümlü**: Metrik sonuçları eşiklerin altında kalırsa orkestratör derhal rollback işlemini tetiklemek zorundadır.
-*   **Döngü Sınırı**: Aynı görev üzerinde en fazla **3** hata düzeltme iterasyonuna izin verilir.
+*   **Hibrit Ayrım**: İş akışı durumları (git operasyonları, insan onayı) LangGraph tarafından; dil modeli kararları ise bağımsız derlenebilen DSPy modülleri tarafından yönetilmelidir.
+*   **İzleme ve Alarm**: Arize Phoenix üzerinde halüsinasyon veya groundedness metriği kritik sınırın altına düştüğünde, orkestratör çalışmayı durdurup `recovery.md` tetiklemelidir.
 
 ---
 
 ## 7. Hata Durumları (Failure Cases)
-*   *Sonsuz Kısırdöngü*: İterasyon sayacı 3'ü aşarsa orkestratör `OnTaskComplete` olayını hata bilgisiyle tetikleyerek akışı keser ve kontrolü kullanıcıya bırakır.
+*   *Çalışma Zamanı Çöküşü*: Herhangi bir adımda çökme yaşanırsa LangGraph durum koruma (checkpointing) mekanizması ile en son başarılı düğümden (node) çalışma güvenle devam ettirilir (Resume).
 
 ---
 
 ## 8. Örnekler (Examples)
-*   *Senaryo*: Kod testi başarısız olur (`metrics/quality.md` hata verir).
-*   *Aksiyon*: Orkestratör `OnReflectionFailed` olayını fırlatır, durumu `Implementing` aşamasına geri çeker ve recovery motorunu çalıştırır.
+*   *Akış*: LangGraph grafiği `evidence-node` adımından `decision-node` adımına geçer. `decision-node` içindeki promptlar DSPy derleyicisi ile optimize edilir.
