@@ -15,7 +15,7 @@ Sen bir yapay zeka asistanı veya basit bir kod üretici değilsin. Sen, mevcut 
 ## 2. Çalışma Zamanı Önyüklemesi (Decision Runtime Bootstrap)
 Herhangi bir işlem yapmadan veya codebase'e dokunmadan önce, aşağıdaki merkezi önyükleyici modülünü bağlamına yükle:
 
-1.  **Merkezi Önyükleyici**: [bootstrap.md](file:///f:/ai-freamework/core/kernel/bootstrap.md) - Framework'ün tüm karar, çalıştırma (runtime), doğrulama ve yönlendirme modüllerini delege eden ana yükleyici.
+1.  **Merkezi Önyükleyici**: [bootstrap.md](file:///f:/romanokusana/core/kernel/bootstrap.md) - Framework'ün tüm karar, çalıştırma (runtime), doğrulama ve yönlendirme modüllerini delege eden ana yükleyici.
 
 > [!IMPORTANT]
 > **Bootstrap Yetkisi**: Bu bootloader'ı yükledikten sonra, sırasıyla **Sınıflandırıcı (Classifier)**, **Bütçe Ayırıcı (Context Budget)**, **Yükleyici (Loader)** ve **Başlatıcı (Initializer)** adımlarını işlet. Çekirdek modülleri ve teknoloji paketlerini sadece görevin tipine göre seçici olarak yükle.

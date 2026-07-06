@@ -1,0 +1,48 @@
+<div class="login-wrapper animate-fade-in">
+  <div class="login-card glass-card">
+    <div class="card-header">
+      <span class="material-icons security-icon">security</span>
+      <h1>Yönetici Girişi</h1>
+      <p>Roman Okusana yönetim paneline erişmek için oturum açın.</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div class="error-alert" *ngIf="errorMsg">
+      <span class="material-icons">error_outline</span>
+      <span>{{ errorMsg }}</span>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="username">Kullanıcı Adı</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          [(ngModel)]="username" 
+          required 
+          class="form-input" 
+          placeholder="Kullanıcı adınızı girin"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          [(ngModel)]="password" 
+          required 
+          class="form-input" 
+          placeholder="Şifrenizi girin"
+        />
+      </div>
+
+      <button type="submit" [disabled]="loading" class="btn btn-primary btn-block">
+        <span *ngIf="!loading">Giriş Yap</span>
+        <span *ngIf="loading" class="btn-spinner"></span>
+      </button>
+    </form>
+  </div>
+</div>

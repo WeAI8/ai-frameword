@@ -1,0 +1,220 @@
+<div class="dashboard-wrapper animate-fade-in">
+  <!-- Dashboard Title -->
+  <div class="dashboard-header">
+    <h1>Yönetici Paneli</h1>
+    <p>Kitapları yönetebilir, yeni romanlar ekleyebilir veya bölümlerini düzenleyebilirsiniz.</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="successMsg">
+    <span class="material-icons">check_circle_outline</span>
+    <span>{{ successMsg }}</span>
+  </div>
+  <div class="alert alert-error" *ngIf="errorMsg">
+    <span class="material-icons">error_outline</span>
+    <span>{{ errorMsg }}</span>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Left Column: Add Novel Form -->
+    <section class="form-section">
+      <div class="glass-card">
+        <h2>Yeni Roman Ekle</h2>
+        <form (ngSubmit)="onSubmit()">
+          
+          <div class="form-group">
+            <label for="title">Roman Başlığı</label>
+            <input 
+              type="text" 
+              id="title" 
+              name="title" 
+              [(ngModel)]="novelTitle" 
+              required 
+              class="form-input" 
+              placeholder="Örn: Yüzüklerin Efendisi"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coverUrl">Kapak Görseli URL'si</label>
+            <input 
+              type="text" 
+              id="coverUrl" 
+              name="coverUrl" 
+              [(ngModel)]="novelCoverUrl" 
+              class="form-input" 
+              placeholder="Örn: https://example.com/kapak.jpg"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Kategoriler</label>
+            <div class="category-checkboxes">
+              <label *ngFor="let cat of categories" class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  [checked]="isCategorySelected(cat.id)" 
+                  (change)="toggleCategory(cat.id)"
+                />
+                <span class="checkbox-custom"></span>
+                {{ cat.name }}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tags">Etiketler (Virgülle Ayırın)</label>
+            <input 
+              type="text" 
+              id="tags" 
+              name="tags" 
+              [(ngModel)]="tagsString" 
+              class="form-input" 
+              placeholder="Örn: Büyü, Macera, Isekai"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="summary">Roman Özeti</label>
+            <textarea 
+              id="summary" 
+              name="summary" 
+              [(ngModel)]="novelSummary" 
+              class="form-input" 
+              placeholder="Romanın konusunu kısaca yazın..."
+            ></textarea>
+          </div>
+
+          <button type="submit" [disabled]="submitting" class="btn btn-primary btn-block">
+            <span *ngIf="!submitting">Romanı Kaydet</span>
+            <span *ngIf="submitting" class="btn-spinner"></span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Novels List -->
+    <section class="list-section">
+      <div class="glass-card">
+        <h2>Mevcut Romanlar ({{ novels.length }})</h2>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+          <div class="spinner"></div>
+          <p>Yükleniyor...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-list" *ngIf="!loading && novels.length === 0">
+          <span class="material-icons">auto_stories</span>
+          <p>Henüz kayıtlı bir roman bulunmuyor. Soldaki formu kullanarak ilk romanı ekleyebilirsiniz.</p>
+        </div>
+
+        <!-- Table List -->
+        <div class="table-container" *ngIf="!loading && novels.length > 0">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Kapak</th>
+                <th>Başlık</th>
+                <th>Kategori</th>
+                <th class="actions-header">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let novel of novels">
+                <td>
+                  <img [src]="novel.coverImageUrl || 'assets/default-cover.jpg'" class="table-cover" alt="" />
+                </td>
+                <td class="novel-title-cell">{{ novel.title }}</td>
+                <td>
+                  <span class="table-category" *ngFor="let cat of novel.categories">{{ cat.name }}</span>
+                </td>
+                <td class="actions-cell">
+                  <a [routerLink]="['/admin/novel', novel.slug, 'chapters']" class="btn btn-secondary btn-table">
+                    <span class="material-icons">list</span> Bölümler
+                  </a>
+                  <button (click)="deleteNovel(novel.id!, novel.title)" class="btn btn-danger btn-table">
+                    <span class="material-icons">delete</span> Sil
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row 2 Left Column: Wishlist Scraper Form -->
+    <section class="form-section" style="margin-top: 2rem;">
+      <div class="glass-card">
+        <h2>Otomatik Roman Tarayıcı (İstek Listesi)</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Buraya eklediğiniz roman adları sistem tarafından internette aranacak, bölümleri temizlenerek (reklam arındırılmış şekilde) otomatik olarak siteye kaydedilecektir.
+        </p>
+        <form (ngSubmit)="onSubmitWishlist()">
+          <div class="form-group">
+            <label for="wishlistTitle">Aranacak Roman Adı</label>
+            <input 
+              type="text" 
+              id="wishlistTitle" 
+              name="wishlistTitle" 
+              [(ngModel)]="wishlistTitle" 
+              required 
+              class="form-input" 
+              placeholder="Örn: Solo Leveling"
+            />
+          </div>
+          <button type="submit" [disabled]="wishlistSubmitting" class="btn btn-primary btn-block">
+            <span *ngIf="!wishlistSubmitting">Tarama Sırasına Ekle</span>
+            <span *ngIf="wishlistSubmitting" class="btn-spinner"></span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Row 2 Right Column: Wishlist Status List -->
+    <section class="list-section" style="margin-top: 2rem;">
+      <div class="glass-card">
+        <h2>Tarama İstek Listesi & Arka Plan Durumu</h2>
+
+        <div class="empty-list" *ngIf="wishlist.length === 0">
+          <span class="material-icons">hourglass_empty</span>
+          <p>Henüz otomatik tarama isteği bulunmuyor. Soldaki formu kullanarak ilk isteği ekleyebilirsiniz.</p>
+        </div>
+
+        <div class="table-container" *ngIf="wishlist.length > 0">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Roman Adı</th>
+                <th>Durum</th>
+                <th>Açıklama / Log</th>
+                <th>İstek Tarihi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of wishlist">
+                <td class="novel-title-cell">{{ item.novelTitle }}</td>
+                <td>
+                  <span class="badge-category" [ngClass]="{
+                    'status-pending': item.status === 'PENDING',
+                    'status-scraping': item.status === 'SCRAPING',
+                    'status-completed': item.status === 'COMPLETED',
+                    'status-failed': item.status === 'FAILED'
+                  }">
+                    {{ item.status === 'PENDING' ? 'Sırada' : 
+                       item.status === 'SCRAPING' ? 'Taranıyor' : 
+                       item.status === 'COMPLETED' ? 'Tamamlandı' : 'Başarısız' }}
+                  </span>
+                </td>
+                <td style="font-size: 0.8rem; color: var(--text-secondary);">{{ item.logMessage }}</td>
+                <td style="font-size: 0.8rem; color: var(--text-muted);">{{ item.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

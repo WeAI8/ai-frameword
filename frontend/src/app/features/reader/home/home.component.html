@@ -1,0 +1,167 @@
+<div class="home-wrapper animate-fade-in">
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Kitap Okumanın En Keyifli Hali</h1>
+    <p>Binlerce fantastik macera, bilim kurgu ve gizem dolu dünya seni bekliyor. Hemen okumaya başla.</p>
+  </section>
+
+  <!-- Reading History Section -->
+  <section class="history-section glass-card animate-fade-in" *ngIf="readingHistory.length > 0">
+    <h2>Okumaya Devam Et <span class="material-icons history-header-icon">history</span></h2>
+    <div class="history-grid">
+      <div class="history-card" *ngFor="let item of readingHistory | slice:0:3">
+        <div class="history-cover">
+          <img [src]="item.coverImageUrl || 'assets/default-cover.jpg'" alt="{{ item.novelTitle }}" />
+        </div>
+        <div class="history-info">
+          <h4>{{ item.novelTitle }}</h4>
+          <p>Kaldığınız yer: Bölüm {{ item.chapterNumber }}</p>
+          <a [routerLink]="['/novel', item.novelSlug, 'oku', item.chapterNumber]" class="btn btn-secondary btn-sm continue-btn">
+            <span class="material-icons">play_arrow</span> Kaldığın Yerden Oku
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recently Added Chapters Section -->
+  <section class="recently-added-section glass-card animate-fade-in" *ngIf="recentlyAddedChapters.length > 0">
+    <h2>Son Eklenen Bölümler <span class="badge-category">Yeni</span></h2>
+    <div class="recently-added-list">
+      <a 
+        *ngFor="let chap of recentlyAddedChapters" 
+        [routerLink]="['/novel', chap.novelSlug, 'oku', chap.chapterNumber]" 
+        class="recent-item"
+      >
+        <span class="recent-novel">{{ chap.novelTitle }}</span>
+        <span class="recent-chapter">Bölüm {{ chap.chapterNumber }}: {{ chap.chapterTitle }}</span>
+        <span class="recent-time material-icons-text">
+          <span class="material-icons time-icon">schedule</span> {{ chap.createdAt | date:'dd.MM.yyyy HH:mm' }}
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Search & Filter Controls -->
+  <section class="controls-section glass-card">
+    <div class="search-bar">
+      <input 
+        type="text" 
+        [(ngModel)]="searchText" 
+        (keyup.enter)="search()" 
+        placeholder="Kitap başlığı veya özetinde ara..." 
+        class="form-input"
+      />
+      <div class="sort-select-wrapper">
+        <select [ngModel]="selectedSort" (ngModelChange)="changeSort($event)" class="form-input sort-select">
+          <option value="recent">En Son Eklenenler</option>
+          <option value="views">En Çok Okunanlar</option>
+          <option value="title">A-Z Sırala</option>
+        </select>
+      </div>
+      <button (click)="search()" class="btn btn-primary">
+        <span class="material-icons">search</span> Ara
+      </button>
+    </div>
+
+    <!-- Category Filter List -->
+    <div class="filter-group">
+      <h3>Kategoriler:</h3>
+      <div class="filter-pills">
+        <button 
+          *ngFor="let cat of categories" 
+          (click)="filterByCategory(cat.slug)"
+          [class.active]="selectedCategorySlug === cat.slug"
+          class="pill-btn"
+        >
+          {{ cat.name }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="filter-group" *ngIf="tags.length > 0">
+      <h3>Etiketler:</h3>
+      <div class="tag-pills">
+        <button 
+          *ngFor="let tag of tags" 
+          (click)="filterByTag(tag.slug)"
+          [class.active]="selectedTagSlug === tag.slug"
+          class="tag-btn"
+        >
+          #{{ tag.name }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Clear Filters Button -->
+    <div class="clear-filters-wrapper" *ngIf="searchText || selectedCategorySlug || selectedTagSlug">
+      <button (click)="clearFilters()" class="btn btn-secondary btn-sm">
+        <span class="material-icons">clear</span> Filtreleri Temizle
+      </button>
+    </div>
+  </section>
+
+  <!-- Tab Selector -->
+  <div class="tab-container glass-card">
+    <div class="tab-buttons">
+      <button [class.active]="activeTab === 'all'" (click)="switchTab('all')" class="tab-btn">
+        <span class="material-icons">import_contacts</span> Tüm Romanlar ({{ novels.length }})
+      </button>
+      <button [class.active]="activeTab === 'library'" (click)="switchTab('library')" class="tab-btn">
+        <span class="material-icons">bookmark</span> Kitaplığım ({{ libraryNovels.length }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Romanlar yükleniyor, lütfen bekleyin...</p>
+  </div>
+
+  <!-- Empty State (All Novels) -->
+  <div class="empty-state glass-card" *ngIf="!loading && activeTab === 'all' && novels.length === 0">
+    <span class="material-icons warning-icon">import_contacts</span>
+    <h2>Aradığınız kriterlere uygun kitap bulunamadı.</h2>
+    <p>Farklı anahtar kelimeler aramayı veya filtreleri temizlemeyi deneyebilirsiniz.</p>
+    <button (click)="clearFilters()" class="btn btn-primary" style="margin-top: 1rem;">Tüm Kitapları Göster</button>
+  </div>
+
+  <!-- Empty State (Library / Bookmarks) -->
+  <div class="empty-state glass-card" *ngIf="!loading && activeTab === 'library' && libraryNovels.length === 0">
+    <span class="material-icons warning-icon">bookmark_border</span>
+    <h2>Kitaplığınız Henüz Boş</h2>
+    <p>Roman detaylarındaki "Kitaplığıma Ekle" butonuna basarak favori kitaplarınızı buraya toplayabilirsiniz.</p>
+    <button (click)="switchTab('all')" class="btn btn-primary" style="margin-top: 1rem;">Yeni Kitaplar Keşfet</button>
+  </div>
+
+  <!-- Novels Grid -->
+  <section class="novels-grid" *ngIf="!loading && (activeTab === 'all' ? novels : libraryNovels).length > 0">
+    <div class="novel-card glass-card" *ngFor="let novel of (activeTab === 'all' ? novels : libraryNovels)">
+      <div class="card-cover">
+        <img [src]="novel.coverImageUrl || 'assets/default-cover.jpg'" alt="{{ novel.title }} kapağı" />
+      </div>
+      <div class="card-content">
+        <div class="card-header">
+          <div class="card-meta-top">
+            <span class="badge-category" *ngFor="let cat of novel.categories">{{ cat.name }}</span>
+            <span class="card-views" title="Görüntülenme Sayısı">
+              <span class="material-icons card-views-icon">visibility</span> {{ novel.viewCount || 0 }}
+            </span>
+          </div>
+          <h2>{{ novel.title }}</h2>
+        </div>
+        <p class="summary-text">{{ novel.summary | slice:0:150 }}{{ novel.summary.length > 150 ? '...' : '' }}</p>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="badge-tag" *ngFor="let tag of novel.tags">#{{ tag.name }}</span>
+          </div>
+          <a [routerLink]="['/novel', novel.slug]" class="btn btn-primary btn-read">
+            Oku <span class="material-icons">menu_book</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,129 @@
+/* Root Layout Styles */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 70px;
+  background: rgba(10, 14, 23, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.logo span {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: var(--transition-smooth);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+.btn-admin-link {
+  border: 1px solid var(--primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  color: var(--primary-hover);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.btn-admin-link:hover {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger-hover);
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-logout:hover {
+  background: var(--danger);
+  color: white;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Main Container */
+.app-main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  min-height: calc(100vh - 170px);
+}
+
+/* Footer layout */
+.app-footer {
+  border-top: 1px solid var(--glass-border);
+  padding: 2rem 0;
+  text-align: center;
+  background: rgba(10, 14, 23, 0.9);
+}
+
+.footer-container p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 1rem;
+  }
+  .app-main {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+  .nav-links {
+    gap: 1rem;
+  }
+  .logo {
+    font-size: 1.25rem;
+  }
+}

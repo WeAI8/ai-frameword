@@ -1,19 +1,17 @@
-# Aktif Bağlam (memory-bank/activeContext.md)
+# Roman Okusana - Aktif Bağlam (memory-bank/activeContext.md)
 
 ---
 
-## 1. Mevcut Odak ve Görevler
-Şu anki odak noktamız; **deep-research-report-1** ve **deep-research-report-2** belgelerindeki bulguları entegre ederek AI Engineering Framework'ü v1.2.6 sürümüne yükseltmektir.
-
-*   `memory-bank/` dizinindeki 6 temel bellek dosyasının oluşturulması (Tamamlandı).
-*   `memory/strategy.md` dosyasının bu yeni dinamik bellek yapısına göre güncellenmesi.
-*   `runtime/recovery.md` dosyasının Signal-over-Noise test filtrelemesine göre güncellenmesi.
-*   `heuristics/token-management.md` dosyasının SonarQube MCP Workspace Mount ayarlarına göre güncellenmesi.
-*   `core/validation/architecture-drift.md` dosyasının ArchUnit test entegrasyonuna göre güncellenmesi.
-*   `runtime/orchestrator.md` dosyasının LangGraph & DSPy hibrit orkestrasyon kurallarına göre güncellenmesi.
+## 1. Mevcut Odak (Current Focus)
+Platformumuzu diğer web novel sitelerindeki (RoyalRoad, NovelUpdates, WebNovel vb.) popüler özelliklerle zenginleştirmek için yeni özelliklerin planlanması ve mimari uyumluluğunun taranması.
 
 ---
 
-## 2. Aktif Kararlar ve Sonraki Adımlar
-*   *Karar*: Projede git operasyonlarının bütünlüğünü korumak adına tüm değişiklikler tamamlandıktan sonra kodlar otomatik olarak commit edilip push'lanacaktır.
-*   *Sonraki Adım*: `memory/strategy.md` ve diğer modüllerin kodlama güncellemelerinin yapılması.
+## 2. Aktif Görevler
+*   **Mevcut Mimariyi Tarama**: Spring Boot ve Angular projelerindeki bağımlılıkları ve yeni eklemeler için dosya yapılarını analiz etme.
+*   **Yeni Özelliklerin Planlanması**:
+    1.  **Gelişmiş Okuyucu Arayüzü** (Gece/Gündüz/Sepya modu, Yazı boyutu ve font seçimi).
+    2.  **Okuma Geçmişi & Kitaplığım** (HTML5 LocalStorage tabanlı, üyelik gerektirmeyen veri saklama).
+    3.  **Kategori ve Tag Filtreleme** (Detaylı arama arayüzü).
+    4.  **Popülerlik ve Görüntülenme Sayacı** (Backend tabanlı görüntülenme izleme).
+*   **Implementation Plan Oluşturma**: `implementation_plan.md` belgesinin hazırlanarak kullanıcı onayına sunulması.

@@ -1,0 +1,121 @@
+<div class="chapters-manage-wrapper animate-fade-in">
+  <!-- Back Button & Header -->
+  <div class="navigation-header">
+    <a routerLink="/admin/dashboard" class="btn btn-secondary btn-sm">
+      <span class="material-icons">arrow_back</span> Panele Dön
+    </a>
+  </div>
+
+  <div class="dashboard-header" *ngIf="novel">
+    <h1>Bölüm Yönetimi: <span>{{ novel.title }}</span></h1>
+    <p>Bu romana yeni bölümler ekleyebilir veya mevcut bölümleri silebilirsiniz.</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="successMsg">
+    <span class="material-icons">check_circle_outline</span>
+    <span>{{ successMsg }}</span>
+  </div>
+  <div class="alert alert-error" *ngIf="errorMsg">
+    <span class="material-icons">error_outline</span>
+    <span>{{ errorMsg }}</span>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Yükleniyor...</p>
+  </div>
+
+  <!-- Two Column Layout -->
+  <div class="dashboard-grid" *ngIf="!loading">
+    <!-- Left Column: Add Chapter Form -->
+    <section class="form-section">
+      <div class="glass-card">
+        <h2>Yeni Bölüm Ekle</h2>
+        <form (ngSubmit)="onSubmit()">
+          
+          <div class="form-group">
+            <label for="chapterNumber">Bölüm Numarası</label>
+            <input 
+              type="number" 
+              id="chapterNumber" 
+              name="chapterNumber" 
+              [(ngModel)]="chapterNumberInput" 
+              required 
+              min="1"
+              class="form-input" 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="title">Bölüm Başlığı</label>
+            <input 
+              type="text" 
+              id="title" 
+              name="title" 
+              [(ngModel)]="chapterTitle" 
+              required 
+              class="form-input" 
+              placeholder="Örn: Yüzük Kardeşliği Başlıyor"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="content">Bölüm İçeriği (Roman Metni)</label>
+            <textarea 
+              id="content" 
+              name="content" 
+              [(ngModel)]="chapterContent" 
+              required
+              class="form-input content-textarea" 
+              placeholder="Romanın bu bölüme ait metnini buraya girin..."
+            ></textarea>
+          </div>
+
+          <button type="submit" [disabled]="submitting" class="btn btn-primary btn-block">
+            <span *ngIf="!submitting">Bölümü Kaydet</span>
+            <span *ngIf="submitting" class="btn-spinner"></span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Chapters List -->
+    <section class="list-section">
+      <div class="glass-card">
+        <h2>Kayıtlı Bölümler ({{ chapters.length }})</h2>
+
+        <div class="empty-list" *ngIf="chapters.length === 0">
+          <span class="material-icons">auto_stories</span>
+          <p>Bu roman için henüz eklenmiş bir bölüm bulunmuyor. Soldaki formu kullanarak ilk bölümü ekleyebilirsiniz.</p>
+        </div>
+
+        <div class="table-container" *ngIf="chapters.length > 0">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Başlık</th>
+                <th>Tarih</th>
+                <th class="actions-header">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let chap of chapters">
+                <td class="chapter-number-cell">Bölüm {{ chap.chapterNumber }}</td>
+                <td class="chapter-title-cell">{{ chap.title }}</td>
+                <td class="chapter-date-cell">{{ chap.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+                <td class="actions-cell">
+                  <button (click)="deleteChapter(chap.id, chap.chapterNumber, chap.title)" class="btn btn-danger btn-table">
+                    <span class="material-icons">delete</span> Sil
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<header class="app-header">
+  <div class="header-container">
+    <a routerLink="/" class="logo">
+      <span>Roman</span>Okusana
+    </a>
+    <nav class="nav-links">
+      <a routerLink="/" class="nav-link">Ana Sayfa</a>
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/admin/login" class="nav-link btn-admin-link">Yönetici Girişi</a>
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <a routerLink="/admin/dashboard" class="nav-link admin-dashboard-link">Admin Paneli</a>
+        <button (click)="logout()" class="btn-logout">Çıkış Yap</button>
+      </ng-container>
+    </nav>
+  </div>
+</header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="app-footer">
+  <div class="footer-container">
+    <p>&copy; 2026 Roman Okusana. Tüm hakları saklıdır. Yapay Zeka Mühendislik Çerçevesi v1.0 ile tasarlandı.</p>
+  </div>
+</footer>

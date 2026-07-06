@@ -1,0 +1,102 @@
+<div [class]="'reader-wrapper animate-fade-in theme-' + theme">
+  <!-- Top Navigation Header -->
+  <div class="reader-nav-header glass-card">
+    <a [routerLink]="['/novel', slug]" class="btn-back">
+      <span class="material-icons">chevron_left</span> {{ chapter ? chapter.novelTitle : 'Kitap Sayfası' }}
+    </a>
+    <div class="header-center-info">
+      <span>Bölüm {{ chapter ? chapter.chapterNumber : '' }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-settings" (click)="toggleSettings()" title="Okuma Ayarları">
+        <span class="material-icons">settings</span>
+      </button>
+      <a routerLink="/" class="btn-home">
+        <span class="material-icons">home</span> Ana Sayfa
+      </a>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div class="settings-backdrop" *ngIf="settingsOpen" (click)="toggleSettings()"></div>
+  <div class="settings-panel glass-card" *ngIf="settingsOpen">
+    <h3>Okuma Ayarları</h3>
+    <div class="settings-group">
+      <label>Tema</label>
+      <div class="theme-options">
+        <button [class.active]="theme === 'light'" (click)="changeTheme('light')" class="theme-btn theme-btn-light">Açık</button>
+        <button [class.active]="theme === 'sepia'" (click)="changeTheme('sepia')" class="theme-btn theme-btn-sepia">Sepya</button>
+        <button [class.active]="theme === 'dark'" (click)="changeTheme('dark')" class="theme-btn theme-btn-dark">Koyu</button>
+      </div>
+    </div>
+    <div class="settings-group">
+      <label>Yazı Boyutu</label>
+      <div class="font-size-options">
+        <button (click)="changeFontSize(-2)" class="size-btn"><span class="material-icons">remove</span></button>
+        <span class="current-size">{{ fontSize }}px</span>
+        <button (click)="changeFontSize(2)" class="size-btn"><span class="material-icons">add</span></button>
+      </div>
+    </div>
+    <div class="settings-group">
+      <label>Yazı Tipi</label>
+      <div class="font-family-options">
+        <button [class.active]="fontFamily === 'sans-serif'" (click)="changeFontFamily('sans-serif')" class="font-btn font-sans-label">Sans-serif</button>
+        <button [class.active]="fontFamily === 'serif'" (click)="changeFontFamily('serif')" class="font-btn font-serif-label">Serif</button>
+        <button [class.active]="fontFamily === 'monospace'" (click)="changeFontFamily('monospace')" class="font-btn font-mono-label">Monospace</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Bölüm yükleniyor, keyifli okumalar...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state glass-card" *ngIf="!loading && errorMsg">
+    <span class="material-icons error-icon">auto_stories</span>
+    <h2>Bölüm Yüklenemedi</h2>
+    <p>{{ errorMsg }}</p>
+    <a [routerLink]="['/novel', slug]" class="btn btn-primary" style="margin-top: 1rem;">Kitap Sayfasına Git</a>
+  </div>
+
+  <!-- Immersive Reading Content -->
+  <article class="reading-area glass-card" *ngIf="chapter && !loading && !errorMsg">
+    <header class="chapter-header">
+      <p class="novel-title-subtitle">{{ chapter.novelTitle }}</p>
+      <h1 class="chapter-title-main">Bölüm {{ chapter.chapterNumber }}: {{ chapter.title }}</h1>
+      <div class="divider"></div>
+    </header>
+
+    <!-- Reading Content (Preserves spacing) -->
+    <div [class]="'chapter-text-content font-' + fontFamily" [style.fontSize.px]="fontSize">
+      {{ chapter.content }}
+    </div>
+
+    <!-- Bottom Navigation Controls -->
+    <footer class="reading-navigation-footer">
+      <button 
+        [disabled]="prevChapterNum === null" 
+        (click)="prevChapterNum !== null && navigateTo(prevChapterNum)" 
+        class="nav-btn"
+        [class.disabled]="prevChapterNum === null"
+      >
+        <span class="material-icons">navigate_before</span> Önceki Bölüm
+      </button>
+
+      <a [routerLink]="['/novel', slug]" class="nav-btn toc-btn">
+        <span class="material-icons">list</span> Bölümler
+      </a>
+
+      <button 
+        [disabled]="nextChapterNum === null" 
+        (click)="nextChapterNum !== null && navigateTo(nextChapterNum)" 
+        class="nav-btn next-btn"
+        [class.disabled]="nextChapterNum === null"
+      >
+        Sonraki Bölüm <span class="material-icons">navigate_next</span>
+      </button>
+    </footer>
+  </article>
+</div>

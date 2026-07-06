@@ -1,15 +1,28 @@
-# Sistem Tasarım Desenleri (memory-bank/systemPatterns.md)
+# Roman Okusana - Sistem Desenleri (memory-bank/systemPatterns.md)
 
 ---
 
-## 1. Mimari Tasarım Desenleri (Architectural Patterns)
-*   **Decision Runtime / Ajan Çalışma Zamanı**: Kod yazımı ve planlamanın otonom denetlendiği, durum makinesine sahip çalışma zamanı.
-*   **OODA Loop (Observe-Orient-Decide-Act)**: Ajanın sürekli olarak projeyi gözlemlemesi, kanıtlarla konumlanması, plan üretip onay alması ve test metrikleriyle kaliteyi ölçerek döngüyü sürdürmesi modeli.
-*   **Önyükleyici (Bootstrap)**: `AGENTS.MD` üzerinden tetiklenen, Classifier/Loader/Initializer katmanlarını barındıran ince bootloader deseni.
+## 1. Mimari Tasarım
+Proje, **Katmanlı Mimari (Layered Architecture)** ve **Tek Sayfa Uygulaması (SPA)** desenlerini kullanır.
+
+```text
+  [ Angular Frontend ] 
+          │ (HTTP REST Calls with JWT)
+          ▼
+  [ REST Controllers ] ──▶ [ Security / JWT Filters ]
+          │
+          ▼
+  [ Service Layer ] (Scrapers, Business Rules)
+          │
+          ▼
+  [ JPA Repositories ] ──▶ [ PostgreSQL Database ]
+```
 
 ---
 
-## 2. Karar Alma ve Doğrulama Desenleri
-*   **Kanıt Ağırlıklı Güven Derecelendirmesi**: Varsayımların kanıt derecelerine (Strong: 1.0, Weak: 0.6) göre puanlanması ve %70 barajının kontrol edilmesi.
-*   **Deterministik Koruma Duvarları**: Mimari kuralların otomatik testlerle (ArchUnit vb.) kodlanması ve ihlal durumunda acil rollback/recovery akışının tetiklenmesi.
-*   **Gürültüsüz Hata Kurtarma**: Başarılı testlerde tek satır yeşil sinyal; hata durumlarında verbose logları atarak sadece stack trace ve hata özetini ajana iletme deseni (Signal-over-Noise).
+## 2. Temel Tasarım Desenleri
+*   **Data Transfer Object (DTO)**: İstemci ile sunucu arasındaki veri transferinde tip güvenliğini sağlamak için `NovelResponseDTO`, `ChapterResponseDTO` vb. kullanılır.
+*   **Repository Pattern**: Veritabanı işlemleri Spring Data JPA arayüzleri (`NovelRepository`, `NovelRequestRepository`) üzerinden soyutlanır.
+*   **Observer Pattern**: Angular servisleri (`NovelService`, `AuthService`) RxJS `Observable` yapıları ile veri akışlarını bileşenlere asenkron dağıtır.
+*   **Scheduler Pattern**: `ScraperScheduler` yardımıyla adminin istekleri periyodik olarak arka planda sırayla işlenir.
+*   **Strategy Pattern (Metin Temizleme)**: Farklı reklam ve sembol tipleri regex filtreleri ile temizlenir.

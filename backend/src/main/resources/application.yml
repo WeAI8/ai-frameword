@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: romanokusana-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/romanokusana
+    username: postgres
+    password: pg
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+app:
+  jwt:
+    # 512-bit secret key in base64 encoding (or plain string) for HS512 signing
+    secret: 407f3f3b9c7bcf22df721cd49e496a78adbc5e0f7f329971032890dfcf8c6a282f1b0a8bb36b9e28f117a02c5f6ffc4a243bb2ff21a8a25c1507bc29cb6fc353
+    expiration-ms: 86400000 # 24 Hours
+
+server:
+  port: 8080

@@ -1,0 +1,360 @@
+/* Reader Component Layout */
+
+.reader-wrapper {
+  max-width: 800px; /* Optimal reading width to prevent eye strain */
+  margin: 0 auto 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Nav Header */
+.reader-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-back, .btn-home {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-back:hover, .btn-home:hover {
+  color: var(--primary-hover);
+}
+
+.header-center-info {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+/* Reading Card */
+.reading-area {
+  padding: 3.5rem 4rem; /* Generous padding for clean layout */
+  border-radius: var(--radius-md);
+}
+
+.chapter-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.novel-title-subtitle {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.chapter-title-main {
+  font-size: 2.25rem;
+  margin-top: 0.5rem;
+  line-height: 1.25;
+}
+
+.divider {
+  width: 50px;
+  height: 3px;
+  background: var(--primary);
+  margin: 1.5rem auto 0;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* Typography settings for reader */
+.chapter-text-content {
+  font-size: 1.15rem; /* Large enough for comfortable reading */
+  line-height: 1.85; /* Spacious line height for reading flow */
+  color: #e2e8f0; /* Softer white for less eye fatigue in dark mode */
+  white-space: pre-wrap; /* Crucial: preserves paragraph breaks and carriage returns */
+  word-wrap: break-word;
+  font-family: var(--font-body);
+}
+
+/* Bottom Navigation */
+.reading-navigation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4.5rem;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 2rem;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: var(--primary);
+  color: var(--primary-hover);
+}
+
+.next-btn {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05));
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.next-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary), #6d28d9);
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+
+.nav-btn:disabled, .nav-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.toc-btn {
+  color: var(--text-secondary);
+}
+
+/* Loading & Errors */
+.loading-state, .error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reading-area {
+    padding: 2rem 1.5rem;
+  }
+  .chapter-title-main {
+    font-size: 1.75rem;
+  }
+  .reading-navigation-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .nav-btn {
+    justify-content: center;
+  }
+  .toc-btn {
+    order: 3;
+  }
+}
+
+/* Header actions alignment */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-settings {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  transition: var(--transition-smooth);
+}
+
+.btn-settings:hover {
+  color: var(--primary);
+  transform: rotate(30deg);
+}
+
+/* Settings Overlay and Panel */
+.settings-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.settings-panel {
+  position: absolute;
+  top: 4.5rem;
+  right: 1.5rem;
+  width: 320px;
+  padding: 1.5rem;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border-radius: var(--radius-sm);
+  animation: slide-down 0.2s ease-out;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-panel h3 {
+  font-size: 1.1rem;
+  font-family: var(--font-heading);
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.5rem;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-group label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.theme-options, .font-family-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.theme-btn, .font-btn {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition-smooth);
+  text-align: center;
+}
+
+.theme-btn-light { background: #ffffff; color: #1e293b; }
+.theme-btn-sepia { background: #fbf0d9; color: #433422; }
+.theme-btn-dark { background: #0f172a; color: #f8fafc; border-color: rgba(255, 255, 255, 0.1); }
+
+.font-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.font-serif-label { font-family: Georgia, serif; }
+.font-mono-label { font-family: monospace; }
+
+.theme-btn.active, .font-btn.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--text-primary) !important;
+}
+
+.font-size-options {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.size-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.size-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--primary);
+}
+
+.current-size {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* Theme Styles Override */
+.theme-light .glass-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+  color: #1e293b !important;
+}
+.theme-light .chapter-text-content {
+  color: #334155 !important;
+}
+.theme-light .btn-back, .theme-light .btn-home, .theme-light .header-center-info, .theme-light .chapter-title-main {
+  color: #0f172a !important;
+}
+.theme-light .nav-btn {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+}
+.theme-light .btn-settings {
+  color: #334155 !important;
+}
+
+.theme-sepia .glass-card {
+  background: #fbf0d9 !important;
+  border-color: rgba(92, 64, 51, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(92, 64, 51, 0.05) !important;
+  color: #433422 !important;
+}
+.theme-sepia .chapter-text-content {
+  color: #433422 !important;
+}
+.theme-sepia .btn-back, .theme-sepia .btn-home, .theme-sepia .header-center-info, .theme-sepia .chapter-title-main {
+  color: #36291a !important;
+}
+.theme-sepia .nav-btn {
+  background: rgba(92, 64, 51, 0.03) !important;
+  border-color: rgba(92, 64, 51, 0.15) !important;
+  color: #433422 !important;
+}
+.theme-sepia .btn-settings {
+  color: #433422 !important;
+}
+
+/* Typography Choices */
+.font-sans {
+  font-family: system-ui, -apple-system, sans-serif !important;
+}
+.font-serif {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
+  letter-spacing: 0.01em;
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  letter-spacing: -0.02em;
+}
+

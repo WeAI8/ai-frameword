@@ -1,0 +1,90 @@
+<div class="detail-wrapper animate-fade-in">
+  <!-- Back Button -->
+  <div class="navigation-header">
+    <a routerLink="/" class="btn btn-secondary btn-sm">
+      <span class="material-icons">arrow_back</span> Ana Sayfaya Dön
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Kitap detayları yükleniyor...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state glass-card" *ngIf="!loading && errorMsg">
+    <span class="material-icons error-icon">error_outline</span>
+    <h2>Hata Oluştu</h2>
+    <p>{{ errorMsg }}</p>
+    <a routerLink="/" class="btn btn-primary" style="margin-top: 1rem;">Ana Sayfaya Git</a>
+  </div>
+
+  <!-- Novel Info Block -->
+  <div class="novel-container" *ngIf="!loading && !errorMsg">
+    <section class="novel-header-section glass-card">
+      <div class="novel-cover-large">
+        <img [src]="novel.coverImageUrl || 'assets/default-cover.jpg'" alt="{{ novel.title }} kapağı" />
+      </div>
+      <div class="novel-info-large">
+        <div class="meta-categories">
+          <span class="badge-category" *ngFor="let cat of novel.categories">{{ cat.name }}</span>
+        </div>
+        <h1>{{ novel.title }}</h1>
+        
+        <div class="popularity-metrics">
+          <span class="metric-item">
+            <span class="material-icons">visibility</span>
+            <span><strong>{{ novel.viewCount || 0 }}</strong> okuma</span>
+          </span>
+        </div>
+
+        <div class="meta-tags" *ngIf="novel.tags.length > 0">
+          <span class="badge-tag" *ngFor="let tag of novel.tags">#{{ tag.name }}</span>
+        </div>
+
+        <div class="novel-actions">
+          <a *ngIf="lastReadChapter !== null" [routerLink]="['/novel', novel.slug, 'oku', lastReadChapter]" class="btn btn-primary btn-lg action-btn continue-btn">
+            <span class="material-icons">play_arrow</span> Okumaya Devam Et (Bölüm {{ lastReadChapter }})
+          </a>
+          <a *ngIf="lastReadChapter === null && novel.chapters && novel.chapters.length > 0" [routerLink]="['/novel', novel.slug, 'oku', novel.chapters[0].chapterNumber]" class="btn btn-primary btn-lg action-btn">
+            <span class="material-icons">menu_book</span> İlk Bölümü Oku
+          </a>
+          <button (click)="toggleBookmark()" class="btn btn-secondary btn-lg action-btn bookmark-btn" [class.bookmarked]="isBookmarked">
+            <span class="material-icons">{{ isBookmarked ? 'bookmark' : 'bookmark_border' }}</span>
+            {{ isBookmarked ? 'Kitaplıktan Kaldır' : 'Kitaplığıma Ekle' }}
+          </button>
+        </div>
+        
+        <div class="summary-section">
+          <h3>Açıklama / Özet</h3>
+          <p>{{ novel.summary || 'Bu kitap için henüz bir özet eklenmemiş.' }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapters List Section -->
+    <section class="chapters-section glass-card">
+      <h2>Bölüm Listesi ({{ novel.chapters?.length || 0 }} Bölüm)</h2>
+      
+      <div class="empty-chapters" *ngIf="!novel.chapters || novel.chapters.length === 0">
+        <span class="material-icons empty-icon">auto_stories</span>
+        <p>Bu kitap için henüz eklenmiş bir bölüm bulunmuyor.</p>
+      </div>
+
+      <div class="chapters-list" *ngIf="novel.chapters && novel.chapters.length > 0">
+        <a 
+          [routerLink]="['/novel', novel.slug, 'oku', chapter.chapterNumber]" 
+          class="chapter-item"
+          *ngFor="let chapter of novel.chapters"
+        >
+          <div class="chapter-info">
+            <span class="chapter-number">Bölüm {{ chapter.chapterNumber }}</span>
+            <span class="chapter-title">{{ chapter.title }}</span>
+          </div>
+          <span class="material-icons read-icon">chevron_right</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>

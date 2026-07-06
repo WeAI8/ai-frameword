@@ -1,14 +1,15 @@
-# Ürün Bağlamı (memory-bank/productContext.md)
+# Roman Okusana - Ürün Bağlamı (memory-bank/productContext.md)
 
 ---
 
 ## 1. İş Değerleri (Business Values)
-*   **Mühendislik Kalitesi**: Büyük ve canlıda çalışan kod tabanlarında AI ajanların mimari erozyona (drift) sebep olmasını engelleyerek bakım maliyetlerini düşürmek.
-*   **Token Ekonomisi**: Temiz ve modüler kod tabanları ve akıllı bütçelendirmelerle, AI operasyonlarında token maliyetlerini %30'un üzerinde azaltmak.
-*   **Güvenli Otonomi**: Güvenlik ve performans denetçilerini pre-commit seviyesinde çalıştırarak otonom kod geliştirmenin risklerini sıfıra indirmek.
+*   **Otomatik İçerik Yönetimi**: Yönetici manuel bölüm girmekle uğraşmaz. İstek listesine novel adını girdiğinde sistem otomatik olarak bölümleri çeker.
+*   **Pürüzsüz Okuma Deneyimi**: Hikaye bölümlerindeki tüm reklam gürültüleri temizlenerek, okuyucuya saf ve rahatsız edilmeyen bir okuma ortamı sunulur.
+*   **Modern Tasarım**: Premium renk paleti, akıcı geçişler ve esnek navigasyon ile kullanıcı etkileşimi artırılır.
 
 ---
 
 ## 2. Kullanıcı Deneyimi (UX Goals)
-*   **Gürültüden Arınmış İletişim**: Ajanın kullanıcıya sadece çıkarım yapamadığı hayati konularda soru sormasını sağlamak (Soruların %20'nin altına düşürülmesi).
-*   **Onboarding Hızı**: README ve bellek bankası belgeleri sayesinde yeni bir AI asistanın projeye katıldığında 20 dakikadan kısa sürede tüm kurallara adapte olmasını sağlamak.
+*   **Kolay Navigasyon**: Önceki/Sonraki bölüm geçişleri, novel detay ekranı ve ana sayfa arasındaki geçişler hızlı ve sezgiseldir.
+*   **Yönetici Kolaylığı**: Admin panelindeki İstek Listesi paneli, arka plan zamanlayıcısının tarama durumunu (Sırada, Taranıyor, Tamamlandı, Hata) 10 saniyede bir otomatik olarak güncelleyerek admini bilgilendirir.
+*   **Okuma Modu**: Reader sayfasında yazı boyutu, temalar ve hizalamalar okuyucunun konforuna göre tasarlanmalıdır.
