@@ -14,11 +14,17 @@ Ajan, her istek veya çalışma adımında aşağıdaki bütçe sınırlarına u
 
 ---
 
-## 2. Sırala ve Oku Akışı (Rank & Read Workflow)
+## 2. Mimari Dışlama Kuralı (Architecture Exclusion Rule)
+*   **Kural**: `memory-bank/techContext.md` altındaki `selected_architecture` (Örn: `springboot-angular`) belirlendikten sonra, ajanın arama ve okuma araçları (file readers, grep searches) seçilmeyen diğer tüm pasif mimari yetenek dosyalarını (`skills/arch-<passive>.md`) okumaktan ve aramaktan **kesinlikle men edilir**.
+*   Bu pasif dosyalar, arama ve sıralama listelerine dahil edilmeden önce otomatik olarak filtrelenerek dışlanır. Böylece pasif mimarilere ait detaylar bağlam penceresinde bir daha asla yer işgal etmez.
+
+---
+
+## 3. Sırala ve Oku Akışı (Rank & Read Workflow)
 
 Ajan, dosyaları rastgele açıp okumak yerine şu sıralı bütçe akışını uygular:
 
 1.  **Gözlemle (Search)**: `grep_search` kullanarak anahtar kelimeleri proje genelinde tara.
-2.  **Sırala (Rank)**: Arama sonuçlarında dönen dosyaları, talebe olan benzerlik ve önem derecesine göre sırala.
+2.  **Sırala (Rank)**: Arama sonuçlarında dönen dosyaları, talebe olan benzerlik ve önem derecesine göre sırala. Pasif mimari dosyalarını bu aşamada elenerek çıkart.
 3.  **Bütçelendir (Budget)**: Sıralamadaki en önemli ilk 3 ila 5 dosyayı seç. Diğerlerini bağlama yükleme.
 4.  **Hedefli Oku (Read)**: Seçilen dosyaların tamamını değil, sadece arama sonucunda eşleşen satır aralıklarını (`view_file` ile start/end belirterek) oku.

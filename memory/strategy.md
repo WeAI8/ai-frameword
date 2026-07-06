@@ -10,13 +10,14 @@ AI ajanının büyük kod tabanlarında bağlamı (context) kaybetmesini önleme
 ## 2. Sorumluluklar (Responsibilities)
 *   `memory-bank/` dizinindeki durum dosyalarını (`activeContext.md`, `progress.md`) her büyük döngü veya oturum başlangıcında okuyup güncellemek.
 *   Geçmiş konuşma ve projelerdeki kararları sorgulamak, sıralamak (Rank) ve Kanıt Motoruna (`evidence.md`) aktarmak.
-*   Eski ve çelişen kararları bellekten temizlemek (Expire).
+*   Eski, çelişen veya **seçilmeyen pasif mimarilere ait kararları** bellekten temizlemek veya derecelendirme dışında tutmak.
 
 ---
 
 ## 3. Girdiler (Inputs)
 *   `memory-bank/` altındaki markdown dosyaları.
 *   Karar arama anahtar kelimeleri.
+*   `selected_architecture` aktif mimari değeri.
 
 ---
 
@@ -35,6 +36,7 @@ AI ajanının büyük kod tabanlarında bağlamı (context) kaybetmesini önleme
 ## 6. Kurallar (Rules)
 *   **Bağlam Sıfırlama Senkronizasyonu**: Bağlam penceresi dolup oturum sıfırlandığında, ajan işe başlamadan önce mutlaka `memory-bank/` altındaki tüm dosyaları okuyarak durumunu güncellemelidir.
 *   **Aktif Güncelleme**: Her önemli görev tamamlandığında (`OnTaskComplete`), `progress.md` ve `activeContext.md` dosyaları yeni duruma göre güncellenmelidir.
+*   **Mimari Filtreleme**: `selected_architecture` dışındaki diğer mimarilere ait eski teknik kararlar (örn. Spring Boot aktifken, eski Django kararları) aramalarda **%0 benzerlik** olarak kabul edilir ve otomatik elenir.
 
 ---
 
