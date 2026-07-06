@@ -1,44 +1,54 @@
-# Çekirdek Önyükleyici (Core Bootstrapper)
-
-> **MİSYON VİZYONU**
-> *The framework does not prescribe solutions. It prescribes a decision-making process. Every module exists to improve the quality, consistency, and architectural alignment of decisions before implementation.*
+# Çekirdek Önyükleyici (core/kernel/bootstrap.md)
 
 ---
 
-## 1. Önyükleme Yaşam Döngüsü (Bootstrap Lifecycle)
-
-Bootstrap, AI çalışma zamanı tetiklendiğinde ilk olarak devreye giren ve sistemi başlatan çekirdek Kernel modülüdür. Görevleri sırasıyla şunlardır:
-
-```text
-Girdi Alındı (Request)
-         ↓
-1. Sınıflandırıcı (Classifier) -> Görev tipini ve kabiliyetleri belirler.
-         ↓
-2. Bütçe Ayırıcı (Context Budget) -> Okunacak dosya ve arama sınırlarını çizer.
-         ↓
-3. Yükleyici (Loader) -> Sadece gerekli modülleri ve teknoloji paketlerini yükler.
-         ↓
-4. Başlatıcı (Initializer) -> Durum makinesini kurar ve Düşünme Pipeline'ını tetikler.
-```
+## 1. Amaç (Purpose)
+AI çalışma zamanını (Decision Runtime) güvenli bir şekilde başlatmak, görev tipini sınıflandırmak, token bütçesini ayırmak ve ilgili bağımlı modülleri yüklemek.
 
 ---
 
-## 2. Alt Bileşen Delegasyon Sorumlulukları
+## 2. Sorumluluklar (Responsibilities)
+*   **Classifier**: Kullanıcı talebini analiz edip `capabilities.md` ile eşleştirmek.
+*   **Context Budget**: `context-budget.md` sınırlarına göre token ve dosya limitlerini belirlemek.
+*   **Loader**: Sadece görevle ilişkili iş akışlarını (`workflows/`) ve teknoloji paketlerini (`technology/`) yüklemek.
+*   **Initializer**: Durum makinesini (`state-machine.md`) başlatıp düşünme işlem hattına (`thinking-pipeline.md`) yönlendirmek.
 
-### A. Classifier (Sınıflandırıcı)
-*   Girdiyi analiz ederek görevin tipini tespit eder.
-*   Görev tipini `core/registry/capabilities.md` kayıt defteri ile eşleştirir (Örn: `Feature`, `Bug`, `Review`).
-*   Eğer görev tipi kayıtlı değilse, varsayılan bir genel geliştirme akışını tetikler.
+---
 
-### B. Context Budget (Bütçe Ayırıcı)
-*   Projedeki token israfını önlemek için `heuristics/context-budget.md` politikalarına göre işlem yapar.
-*   Maksimum okunacak dosya sayısı (Örn: en fazla 5 dosya) ve arama bütçesi limitlerini ayarlar.
+## 3. Girdiler (Inputs)
+*   Kullanıcı talebi (Request String)
+*   Codebase dizin yapısı
+*   `core/registry/capabilities.md` kabiliyet listesi
 
-### C. Loader (Yükleyici)
-*   **Seçici Bağlam Yükleme (Selective Loading)** ilkesini uygular.
-*   Görevin ilişkili olduğu teknoloji sürücülerini (`technology/`) ve iş akışını (`workflows/`) belleğe yükler.
-*   İlişkisiz modülleri (Örn: Spring backend işinde Flutter paketini) kesinlikle yüklemez.
+---
 
-### D. Initializer (Başlatıcı)
-*   Ajanın durum makinesini (`core/kernel/state-machine.md`) **"Discovering"** durumuna getirir.
-*   Olay dinleyicilerini (`runtime/events.md`) tetikler ve `core/kernel/thinking-pipeline.md` işlem hattını çalıştırır.
+## 4. Çıktılar (Outputs)
+*   Görev Sınıflandırması (`Task Type`)
+*   Bağlam Bütçesi Sınırları (`File Read Limits`)
+*   Durum Geçiş Tetikleyicisi (`OnTaskStart` olayı)
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/registry/capabilities.md`
+*   `heuristics/context-budget.md`
+*   `core/kernel/state-machine.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Seçici Yükleme**: Görevle ilgisi bulunmayan teknoloji ve iş akışı dosyalarını asla yükleme (Token tasarrufu).
+*   **Bütçe Zorunluluğu**: `context-budget.md` limitlerini aşan aramalara/okumalara izin verme.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Tanımsız Görev Tipi*: Görev tipi kabiliyet listesinde bulunamazsa varsayılan genel geliştirme akışını (`Feature`) yükle.
+*   *Bütçe Aşımı*: Token/Dosya limiti aşıldığında `OnTaskComplete` olayını hata durum koduyla tetikleyerek akışı durdur.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Girdi*: "Kullanıcı tablosuna yeni bir email alanı ekle"
+*   *Sınıflandırma*: `Feature` (Yeni Özellik)
+*   *Yüklenen Sürücüler*: `workflows/feature-analysis.md` (Diğerleri yüklenmedi).

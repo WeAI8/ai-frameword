@@ -1,22 +1,50 @@
-# Planlayıcı Motoru (Planner Engine)
-
-Planlayıcı, toplanan kanıtlar ve verilen kararlar doğrultusunda, kodlama aşamasına geçmeden önce kullanıcıdan onay alınacak teknik uygulama planını (`implementation_plan.md`) üreten motordur.
+# Planlayıcı Motoru (core/decision/planner.md)
 
 ---
 
-## 1. Uygulama Planı Üretim Kriterleri
-
-Planlayıcı, planı oluştururken aşağıdaki standartlara uymak zorundadır:
-
-*   **Dosya Kategorizasyonu**: Değişecek tüm dosyalar ismen belirtilmeli ve `[NEW]`, `[MODIFY]`, `[DELETE]` etiketleriyle işaretlenmelidir.
-*   **Bağımlılık Sıralaması (Dependency Ordering)**: Planlanan dosya değişiklikleri mantıksal bağımlılık sırasına göre yazılmalıdır (Örn: Veritabanı şeması ve DTO'lar ilk sırada, Servis katmanı ikinci sırada, Controller ve UI en son sırada yazılmalıdır).
-*   **Kanıt Entegrasyonu**: Planda değiştirilecek veya oluşturulacak her dosya için, gerekçe olarak `core/decision/evidence.md` tarafından bulunan kanıtlar referans gösterilmelidir.
+## 1. Amaç (Purpose)
+Geliştirme öncesinde, yapılacak tüm dosya değişikliklerini, bağımlılık önceliklerini ve etki alanlarını gösteren onaylanabilir bir teknik plan (`implementation_plan.md`) üretmek.
 
 ---
 
-## 2. Etki Analizi (Impact Analysis)
+## 2. Sorumluluklar (Responsibilities)
+*   Değişecek dosyaları `[NEW]`, `[MODIFY]`, `[DELETE]` olarak sınıflandırmak.
+*   Değişiklikleri mantıksal bağımlılık sırasına (Dependency Ordering) göre sıralamak.
+*   Mimari, performans ve güvenlik risk etki analizini yapmak.
 
-Planlayıcı, önerilen değişikliğin sistem üzerindeki etki alanını analiz etmeli ve şu başlıkları plana eklemelidir:
-1.  **Etkilenen Katmanlar**: Değişikliğin sınırları (Örn: Sadece frontend mi, veritabanını etkiliyor mu?).
-2.  **Geriye Dönük Uyumluluk (Backward Compatibility)**: API uçlarının veya veritabanı tablolarının mevcut versiyonlarla uyumlu çalışıp çalışmayacağı.
-3.  **Performans Etkisi**: Eklenen sorgunun veya arayüz bileşeninin potansiyel yükü.
+---
+
+## 3. Girdiler (Inputs)
+*   Kabul kriterleri (Acceptance Criteria).
+*   Kanıt Motorundan (`evidence.md`) gelen kod örnekleri.
+*   Risk puanları (`heuristics/risk-scoring.md`).
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Teknik Uygulama Planı (`implementation_plan.md` şablonuna uygun).
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `heuristics/risk-scoring.md`
+*   `templates/implementation-plan.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Bağımlılık Önceliği**: Bağımlı olunan alt katmanlar (Örn: DTO, DB Tablosu) en üstte, üst katmanlar (UI, Controller) en altta planlanmalıdır.
+*   **Kanıt Bağlantısı**: Plandaki her değişiklik gerekçelendirilerek kanıtlara link verilmelidir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Etki Alanı Belirsizliği*: Değişikliğin geriye dönük uyumluluğu bozma riski varsa planı oluşturma; önce `Question Engine` ile netleştir.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Plan Sırası*: 
+    1. `[NEW] src/dto/UserDTO.java`
+    2. `[MODIFY] src/services/UserService.java`
+    3. `[MODIFY] src/controllers/UserController.java`

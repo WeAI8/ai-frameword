@@ -1,28 +1,43 @@
-# Çerçeve Modülleri Defteri (Modules Registry)
-
-Bu belge, **AI Engineering Decision Framework** içindeki modüllerin listesini, bunların bağımlılıklarını ve çalışma sırasındaki yüklenme önceliklerini tanımlar.
+# Çerçeve Modülleri Defteri (core/registry/modules.md)
 
 ---
 
-## 1. Modül Bağımlılık Haritası (Module Dependency Map)
-
-Çalışma zamanında modüllerin yüklenme sırası bağımlılıklarına göre belirlenir:
-
-| Modül Adı | Dizin/Dosya | Öncelik | Bağımlılıklar (Dependencies) |
-| :--- | :--- | :---: | :--- |
-| **bootstrap** | `core/kernel/bootstrap.md` | 1 | Yok |
-| **state-machine** | `core/kernel/state-machine.md` | 1 | Yok |
-| **thinking-pipeline** | `core/kernel/thinking-pipeline.md` | 2 | `state-machine` |
-| **evidence** | `core/decision/evidence.md` | 2 | `memory/strategy` |
-| **confidence** | `core/decision/confidence.md` | 3 | `evidence` |
-| **question-engine** | `core/decision/question-engine.md` | 4 | `confidence` |
-| **planner** | `core/decision/planner.md` | 5 | `evidence`, `confidence` |
-| **reflection** | `core/validation/reflection.md` | 6 | `core/architecture.md` |
-| **hallucination** | `core/validation/hallucination.md` | 2 | Yok |
-| **architecture-drift**| `core/validation/architecture-drift.md`| 6 | `core/architecture.md` |
+## 1. Amaç (Purpose)
+Decision Runtime altındaki tüm modüllerin listesini, konumlarını ve çalışma zamanındaki bağımlılık önceliklerini merkezi olarak yönetmek.
 
 ---
 
-## 2. Bağımlılık Yönetimi Kuralları
-*   Bir modül yüklenmeden önce, bağımlı olduğu tüm modüllerin başarıyla yüklendiği ve başlatıldığı doğrulanmalıdır.
-*   Dairesel bağımlılıklar (Circular module dependencies) yasaktır. Yeni bir modül eklenirken dairesel döngü oluşturulmadığından emin olunmalıdır.
+## 2. Sorumluluklar (Responsibilities)
+*   Modüllerin bağımlılık haritasını (dependency map) tutmak.
+*   Yüklenme sırasındaki hiyerarşik öncelikleri (priority) denetlemek.
+
+---
+
+## 3. Girdiler (Inputs)
+*   Modül başlatma sorguları.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Hiyerarşik Yükleme Sıralaması.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   Yok (Merkezi referans defteridir).
+
+---
+
+## 6. Kurallar (Rules)
+*   **Bağımlılık Kontrolü**: Bir modül yüklenmeden önce bağımlı olduğu tüm modüllerin başlatıldığından emin olunmalıdır.
+*   **Dairesel Bağımlılık Yasağı**: Modüller arasında dairesel döngü (Örn: A -> B -> A) oluşturulması yasaktır.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Eksik Bağımlılık*: Bir modülün bağımlı olduğu dosya bulunamazsa önyükleme durdurulur ve derleme hatası fırlatılır.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Modül*: `confidence` modülü, `evidence` modülü yüklenmeden çalıştırılamaz (Öncelik sırası denetlenir).

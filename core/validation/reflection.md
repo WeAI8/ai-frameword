@@ -1,26 +1,48 @@
-# Öz-Yansıtma Motoru (Reflection Engine)
-
-Öz-Yansıtma Motoru, ajanın kod yazma aşamasına geçmeden önce ve çalışmasını teslim etmeden hemen önce kendi tasarladığı çözümü içsel olarak sorgulamasını sağlar. "Ben doğru düşündüm mü?" sorusuna yanıt arar.
+# Öz-Yansıtma Motoru (core/validation/reflection.md)
 
 ---
 
-## 1. Kodlama Öncesi Öz-Yansıtma Adımları
-
-Plan onaylandıktan sonra, kod yazılmadan önce ajan aşağıdaki kontrolleri yaparak planı doğrular:
-
-1.  **Mantık Doğrulaması (Logic Check)**:
-    *   Tüm mantıksal değişkenler, veri tipleri ve veri akış yönleri doğru mu? Kodda eksik durum (edge case) veya mantıksal boşluk var mı?
-2.  **Mimari Sınır Doğrulaması (Architecture Check)**:
-    *   Tasarım, `core/architecture.md` sınırlarına uygun mu? Katmanlar baypas ediliyor mu? Bağımlılıklar doğru enjekte edilmiş mi?
-3.  **Güvenlik ve Performans Ön Kontrolü**:
-    *   Input validation (girdi doğrulama) yapılıyor mu? N+1 sorgusu oluşma riski var mı?
+## 1. Amaç (Purpose)
+Kod yazılmadan önce mantıksal planın doğruluğunu denetlemek; kod yazıldıktan sonra ise çıktıyı dış dünyaya sunmadan önce içsel olarak doğrulamak ("Ben doğru düşündüm mü?").
 
 ---
 
-## 2. Teslimat Öncesi Doğrulama ve Döngü Tetikleme (Trigger Loop)
+## 2. Sorumluluklar (Responsibilities)
+*   Kodlama öncesi mantıksal boşlukları (edge cases) aramak.
+*   Mimari sınırlar, performans ve güvenlik kuralları yönünden tasarlanan kodu doğrulamak.
+*   Hata durumunda otomatik düzeltme (self-healing) tetiklemek.
 
-Kod yazımı bittikten sonra, ajan kodunu `review/` katmanına devretmeden önce son bir kez doğrular. Eğer bu aşamada bir hata tespit ederse:
-*   Kodu dışarıya sunmaz.
-*   `runtime/events.md` üzerinden `OnReflectionFailed` olayını tetikler.
-*   Çalışma durumunu `state-machine.md` kurallarına göre `Implementing` aşamasına geri çeker.
-*   Hatanın kök nedenini analiz ederek kendi yazdığı kodu otomatik olarak düzeltmeye (self-healing) başlar.
+---
+
+## 3. Girdiler (Inputs)
+*   Teknik Uygulama Planı.
+*   Geliştirilen kaynak kodlar.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Doğrulama Sonuç Raporu.
+*   Hatalı durumlarda `OnReflectionFailed` olayı.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/architecture.md`
+*   `runtime/events.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Kod Öncesi Doğrulama**: Plan onaylansa dahi, mantık doğrulaması yapılmadan tek bir dosya yazım işlemine başlanamaz.
+*   **İçsel Düzeltme**: Hata tespit edildiğinde kullanıcıya hata göstermeden önce otomatik onarım (`runtime/recovery.md`) adımları denenmelidir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Çözülemeyen Hata*: Düzeltme döngüsü 3'ü aşarsa orkestratör üzerinden akışı durdur ve kullanıcıya raporla.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Tespit*: Yazılan kodda null-pointer riski olduğu fark edilir.
+*   *Aksiyon*: Ajan kodu teslim etmeden önce null check ekleyerek günceller.

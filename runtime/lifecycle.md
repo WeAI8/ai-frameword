@@ -1,33 +1,45 @@
-# Çalışma Zamanı Yaşam Döngüsü (Runtime Lifecycle)
-
-Yaşam Döngüsü, ajanın statik "Yükle -> Çalıştır -> Bitir" mantığından sıyrılarak, sürekli gözlemleyen ve kendini düzelten dinamik **OODA Loop (Gözlemle-Konumlan-Karar Ver-Uygula)** modeli üzerinde çalışmasını sağlar.
+# Çalışma Zamanı Yaşam Döngüsü (runtime/lifecycle.md)
 
 ---
 
-## 1. Yaşam Döngüsü Aşamaları (OODA Loop)
-
-Ajanın yaşam döngüsü şu döngüsel aşamalardan oluşur:
-
-```text
-       ┌─────────── Gözlemle (Observe) ───────────┐
-       │                                         │
-       ▼                                         ▼
-Konumlan (Orient) ──> Karar Ver (Decide) ──> Uygula (Act) ──> Ölç/Öğren (Measure)
-                                                                 │
-                                                                 ▼
-                                                           Tekrarla/Bitir (Repeat)
-```
-
-1.  **Observe (Gözlemle)**: Codebase'i, girdiyi ve bağımlılıkları tara. Değişiklik ihtiyacını ve bütçeyi gör.
-2.  **Orient (Konumlan)**: Proje kanıtlarını (`evidence.md`) ve geçmiş kararları sorgulayarak kendini projenin mimarisine uyarla.
-3.  **Decide (Karar Ver)**: Güven puanını hesapla. Teknik uygulama planını (`planner.md`) ve risk analizini oluştur.
-4.  **Act (Uygula)**: Kodu yaz ve birim testleri koştur.
-5.  **Measure/Learn (Ölç/Öğren)**: Kod kalitesini, mimari aşınmayı ve doğruluğu ölç. Hatalardan öğren (kök neden analizi).
-6.  **Repeat (Tekrarla)**: Eğer kalite limitleri aşılmadıysa döngüyü recovery ile tekrar başlat, her şey yeşilse döngüyü sonlandır.
+## 1. Amaç (Purpose)
+Ajanın çalışma süreçlerini statik bir akış yerine, sürekli gözlemleyen ve kendini düzelten dinamik **OODA Loop** modeli üzerinde koordine etmek.
 
 ---
 
-## 2. Kesinti ve Duraklatma Yönetimi (Interrupts)
+## 2. Sorumluluklar (Responsibilities)
+*   OODA (Observe, Orient, Decide, Act, Measure, Repeat) döngüsel aşamalarını yönetmek.
+*   Waiting Approval ve Soru sorma durumlarındaki kesintileri (Interrupt) ve duraklatmaları yönetmek.
 
-*   **Waiting Approval Duraklatması**: Plan oluşturulduktan sonra döngü otomatik olarak duraklatılır (state: `Waiting Approval`). Kullanıcı onayı gelene kadar runtime beklemede (Suspended) kalır.
-*   **Kritik Soru Kesintisi (OnConfidenceLow)**: Güven seviyesi kritik sınırın altına düştüğünde, soru sormak için çalışma zamanı kesintiye (Interrupt) uğrar. Cevap alındığında kaldığı yerden (Resume) devam eder.
+---
+
+## 3. Girdiler (Inputs)
+*   Orkestratör çalışma sinyalleri.
+*   Kullanıcı kesme/onay bildirimleri.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Yaşam döngüsü durum güncellemeleri.
+*   Askıya alma (Suspend) ve Devam etme (Resume) sinyalleri.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `runtime/orchestrator.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **OODA Bütünlüğü**: Ajan her zaman OODA döngü sırasına uygun çalışmalıdır (Gözlemlemeden karar verilemez, karar verilmeden uygulanamaz).
+*   **Onay Duraklatması**: Plan oluşturulduktan sonra onay gelene kadar runtime beklemede (Suspended) kalmalıdır.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Çelişen Durum*: Kesinti (Interrupt) sinyali gelirse mevcut işlem güvenli bir noktada durdurulur ve durum dondurulur.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Akış*: Ajan planı onay için sunar, durumu `Waiting Approval` yapar ve yürütmeyi duraklatır.

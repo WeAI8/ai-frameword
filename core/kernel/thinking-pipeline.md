@@ -1,32 +1,47 @@
-# Düşünme Sırası İşlem Hattı (Thinking Pipeline)
-
-Bu modül, ajanının bir talep aldığında "hangi sırayla" düşünmesi gerektiğini tanımlar. Ajan bu işlem hattındaki adımları atlayamaz.
+# Düşünme Sırası İşlem Hattı (core/kernel/thinking-pipeline.md)
 
 ---
 
-## 1. Düşünme İşlem Hattı Adımları (10 Aşamalı)
-
-Ajan her görevde aşağıdaki 10 adımı sırasıyla takip eder:
-
-```text
-1. Receive (Al) ──> 2. Expand (Genişlet) ──> 3. Search (Ara) ──> 4. Evidence (Kanıt Topla)
-                                                                       │
-8. Decision (Karar) <── 7. Question (Sorgula) <── 6. Risk (Risk) <── 5. Confidence (Güven)
-         │
-9. Reflection (Doğrula) ──> 10. Output (Çıktı Hazırla)
-```
+## 1. Amaç (Purpose)
+Ajanın istek aldığından nihai çıktıyı üretene kadar takip etmesi gereken sıralı bilişsel adımları (Thinking pipeline) yönetmek.
 
 ---
 
-## 2. Adımların Detaylı İşleyişi
+## 2. Sorumluluklar (Responsibilities)
+*   10 aşamalı sıralı düşünme sürecini işletmek (Receive -> Expand -> Search -> Evidence -> Confidence -> Risk -> Question -> Decision -> Reflection -> Output).
+*   Gerekli modülleri doğru işlem sırasında tetiklemek.
 
-1.  **Receive (Al)**: Kullanıcıdan veya başka bir ajandan girdi alınır. Görevin ilk okuması gerçekleştirilir.
-2.  **Expand (Genişlet)**: Kısa istek teknik gereksinimlere genişletilir (Intent Expansion). İş hedefleri tanımlanır.
-3.  **Search (Ara)**: `heuristics/context-budget.md` bütçesi dahilinde projedeki ilgili dosyalar taranır.
-4.  **Evidence (Kanıt Topla)**: Önerilecek çözümü desteklemek için codebase'deki ve aktif bellekteki (`memory/`) benzer kodlar referans olarak toplanır.
-5.  **Confidence (Güven)**: Yapılan varsayımların güven seviyesi hesaplanır (`core/decision/confidence.md`). Karar eşiği aşılıp aşılmadığı kontrol edilir.
-6.  **Risk (Risk)**: Değişikliğin mimari, performans ve güvenlik riskleri sayısal olarak puanlanır.
-7.  **Question (Sorgula)**: Güven seviyesi düşükse ve çıkarım yapılamıyorsa, sadece kritik sorular kullanıcıya yöneltilir.
-8.  **Karar (Decision)**: Mevcut kodu yeniden kullanma, uyarlama veya yeni kod yazma hiyerarşisi uygulanır. Planlayıcı (`core/decision/planner.md`) teknik planı hazırlar.
-9.  **Reflection (Doğrula)**: Kod yazılmadan önce mimari uyum, halüsinasyon kontrolü ve potansiyel hatalar içsel olarak denetlenir.
-10. **Output (Çıktı Hazırla)**: Kararlar çıktı sözleşmesine (`templates/output-contract.md`) uygun olarak kullanıcıya veya bir sonraki ajana devredilir.
+---
+
+## 3. Girdiler (Inputs)
+*   Kullanıcı talebi
+*   İlişkili kod dosyaları ve kanıtlar
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Sıralı düşünme durum logu
+*   Nihai planlama ve kod çıktıları
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/decision/confidence.md`
+*   `core/decision/evidence.md`
+*   `core/validation/reflection.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Adım Atlama Yasağı**: Ajan hiçbir düşünme adımını atlayamaz (Örn: Kanıt toplamadan risk analizi yapamaz).
+*   **Kritik Soru Eşiği**: Güven seviyesi hesaplanmadan soru sorma adımına geçilemez.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *İşlem Hattı Kopması*: Bir adımda hata alınması durumunda orkestratör üzerinden rollback döngüsünü tetikle ve süreci durdur.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Akış*: Ajan `Search` adımını tamamlayıp `Evidence` adımına geçer, ardından elde ettiği kanıtlara göre `Confidence` puanı hesaplar.

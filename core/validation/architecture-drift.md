@@ -1,27 +1,48 @@
-# Mimari Kayma ve Aşınma Koruyucusu (Architectural Drift Detection)
-
-Mimari Kayma, zaman içinde yapılan küçük ve plansız değişikliklerin projenin ana yazılım mimarisini bozması ve katman sınırlarını aşındırması durumudur. Bu modül, ajanın yazdığı kodun mimari erozyona yol açmasını engeller.
+# Mimari Kayma ve Aşınma Koruyucusu (core/validation/architecture-drift.md)
 
 ---
 
-## 1. Kayma Tespit Kuralları (Drift Check Rules)
-
-Ajan, planlama ve kodlama sırasında aşağıdaki mimari kuralları doğrulamak zorundadır:
-
-*   **Katman İhlali Kontrolü (Layering Violations)**:
-    *   *Kural*: Üst katmanlar alt katmanları doğrudan çağırabilir ancak alt katmanlar üst katmanları kesinlikle çağıramaz (Örn: Service katmanı Controller çağıramaz).
-    *   *Kural*: Katman baypası yapılamaz (Örn: Controller doğrudan Repository çağıramaz; araya Service katmanı girmelidir).
-*   **Dairesel Bağımlılık Kontrolü (Circular Dependencies)**:
-    *   *Kural*: Sınıflar arasında dairesel import/bağımlılık (Örn: A sınıfının B'yi, B sınıfının da A'yı çağırması) oluşturulamaz.
-*   **DTO ve Veri Sınırı Kontrolü (Data Leakage)**:
-    *   *Kural*: Veritabanı Entity sınıfları doğrudan Controller veya UI katmanına taşınamaz. Dış dünya ile sadece DTO nesneleri konuşabilir.
+## 1. Amaç (Purpose)
+Geliştirilen kodların projenin katman sınırlarını, bağımlılık yönlerini ve yapısal mimarisini bozmasını (drift/erozyon) engellemek.
 
 ---
 
-## 2. İhlal Durumu ve Kurtarma (Recovery Trigger)
+## 2. Sorumluluklar (Responsibilities)
+*   Katman sınırlarının ihlal edilip edilmediğini denetlemek (Örn: Katman baypası).
+*   Sınıflar arası dairesel bağımlılıkları (circular dependencies) taramak.
+*   Entity sızmalarını ve DTO kurallarını doğrulamak.
 
-Eğer yazılan kodda bir mimari kayma tespit edilirse:
-*   Ajan geliştirme akışını hemen durdurur.
-*   `runtime/events.md` üzerinden `OnArchitectureViolation` olayını tetikler.
-*   Mimar ajanı (`Architect`) devreye alarak teknik planın yeniden düzenlenmesini sağlar.
-*   Mimari hata giderilene kadar kodun ana dallara (main/master) commit edilmesine izin verilmez.
+---
+
+## 3. Girdiler (Inputs)
+*   Önerilen kod değişiklikleri taslağı.
+*   `core/architecture.md` mimari kuralları.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Mimari Uyum Raporu.
+*   İhlal durumunda `OnArchitectureViolation` olayı.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/architecture.md`
+*   `metrics/architecture-score.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Katman Sınırı Geçilemez**: Alt katmanlar üst katmanları kesinlikle çağıramaz (Örn: Service -> Controller import edilemez).
+*   **Entity İzolasyonu**: Veritabanı entity sınıfları sadece veri katmanında kalmalı, UI veya API controller uçlarına sızdırılmamalıdır.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Mimari İhlal*: İhlal tespit edildiğinde `metrics/architecture-score.md` puanı düşürülür, kodlama durdurulur ve acil rollback tetiklenir.
+
+---
+
+## 8. Örnekler (Examples)
+*   *İhlal*: Geliştiricinin `OrderController` içine doğrudan `OrderRepository` enjekte etmeye çalışması (Katman Baypası).
+*   *Aksiyon*: Kayma koruyucu bunu engeller ve orkestratöre ihlal bildirir.

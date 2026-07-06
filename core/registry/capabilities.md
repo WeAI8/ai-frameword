@@ -1,23 +1,44 @@
-# Kabiliyet Kayıt Defteri (Capability Registry)
-
-Bu belge, ajanın yapabileceği ve desteklediği görev tiplerini ve bu görevler sırasında çalışacak modülleri tanımlar. Yeni bir kabiliyet eklendiğinde bu deftere kaydedilmelidir.
+# Kabiliyet Kayıt Defteri (core/registry/capabilities.md)
 
 ---
 
-## 1. Kayıtlı Ajan Kabiliyetleri (Capabilities)
-
-| Kabiliyet (Capability) | Kod | Tetikleyici Dosya | Açıklama |
-| :--- | :--- | :--- | :--- |
-| **Yeni Özellik Geliştirme** | `Feature` | `workflows/feature-analysis.md` | Projeye yeni bir işlevsellik veya modül eklenmesi. |
-| **Hata Giderme** | `Bug` | `workflows/bug-investigation.md` | Mevcut hataların teşhis edilmesi ve düzeltilmesi. |
-| **Kod İyileştirme** | `Refactor` | `workflows/refactor.md` | Kod kalitesinin artırılması, teknik borcun temizlenmesi. |
-| **Kod Denetimi** | `Review` | `workflows/code-review.md` | Yazılan kodun standartlara uygunluğunun incelenmesi. |
-| **Birim Test Geliştirme** | `Test` | `workflows/testing.md` | Kapsama uygun otomatik birim testlerin yazılması. |
-| **Teknik Belgelendirme** | `Doc` | `workflows/documentation.md` | Javadoc, Swagger veya README dosyalarının güncellenmesi. |
+## 1. Amaç (Purpose)
+Ajanın yapabileceği görev türlerini (capabilities) ve bu görevler sırasında çalışacak iş akışlarını merkezi bir katalogda tanımlamak.
 
 ---
 
-## 2. Kabiliyet Eşleştirme ve Sorgulama Mantığı
-*   Önyükleyici (`core/kernel/bootstrap.md`), kullanıcı talebini aldığında bu defteri sorgulayarak en uygun kabiliyet kodunu belirler.
-*   Eşleşen kabiliyete ait iş akışı (workflow) ve teknoloji sürücüleri yüklenir.
-*   Eşleşme bulunamazsa, genel `Feature` kabiliyeti varsayılan olarak seçilir.
+## 2. Sorumluluklar (Responsibilities)
+*   Ajanın iş yapabilme listesini güncel tutmak (Feature, Bug, Refactor, Review, Test, Doc vb.).
+*   Görev tiplerini ilgili tetikleyici dosyalarla eşleştirmek.
+
+---
+
+## 3. Girdiler (Inputs)
+*   Önyükleyiciden (`bootstrap.md`) gelen görev tipi sorgusu.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Tetiklenecek iş akışı dosya yolu (`workflows/`).
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/registry/workflows.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Kayıt Zorunluluğu**: Yeni bir ajan yeteneği veya iş tipi eklendiğinde, bu deftere kaydedilmeden sistem tarafından çalıştırılamaz.
+*   **Tek Tetikleyici**: Her kabiliyetin sadece tek bir ana tetikleyici iş akışı (workflow) dosyası olabilir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Eşleşme Hatası*: Gelen görev tipi kayıtlı değilse, çalışma zamanı hata fırlatmak yerine varsayılan genel akışı (`Feature`) tetikler.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Sorgu*: `Bug` (Hata Giderme)
+*   *Eşleşen Dosya*: `workflows/bug-investigation.md`

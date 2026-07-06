@@ -1,22 +1,47 @@
-# Çalışma Zamanı Olayları (Runtime Events)
-
-Olay Sistemi, çoklu ajan (multi-agent) mimarisinin ve Decision Runtime modüllerinin birbiriyle asenkron veya senkron olarak haberleşmesini, tetiklenmesini ve geri bildirim döngülerini kurmasını sağlar.
+# Çalışma Zamanı Olayları (runtime/events.md)
 
 ---
 
-## 1. Kayıtlı Çalışma Zamanı Olayları (Events)
-
-| Olay Adı (Event Name) | Tetiklenme Zamanı | Tetiklediği Modül/Aksiyon |
-| :--- | :--- | :--- |
-| **OnTaskStart** | Kullanıcıdan talep alındığında. | `Classifier` ve `Context Budget` modüllerini çalıştırır. |
-| **OnEvidenceFound** | Kanıt motoru aramayı bitirdiğinde. | Güven Puanını (`confidence.md`) yeniden hesaplatır. |
-| **OnConfidenceLow** | Güven puanı %70'in altına düştüğünde. | Ajanı durdurur ve `Question Engine` modülünü tetikler. |
-| **OnArchitectureViolation** | Kodda mimari kayma tespit edildiğinde. | Değişikliği geri alır (Rollback) ve `Recovery` modülünü çalıştırır. |
-| **OnReflectionFailed** | Teslimat öncesi öz-yansıtma başarısız olduğunda. | Kodu `Implementing` durumuna çeker ve Geliştiriciyi tetikler. |
-| **OnTaskComplete** | Tüm DoD kriterleri sağlandığında. | Çıktıyı `output-contract.md` formatında kullanıcıya teslim eder. |
+## 1. Amaç (Purpose)
+Ajanların ve karar runtime modüllerinin birbiriyle asenkron veya senkron olarak haberleşmesini sağlayan olay dinleme ve fırlatma altyapısını kurmak.
 
 ---
 
-## 2. Olay Dinleme ve İletişim Kuralları
-*   Her olay, tetiklendiği andaki bağlamı (hata stack trace'i, etkilenen dosya yollarını, güncel durum bilgisini) parametre olarak taşır.
-*   Çoklu ajan senaryolarında, Ajan A (Geliştirici) bir dosyayı değiştirdiğinde `OnReflectionFailed` veya `OnArchitectureViolation` olayı tetiklenirse, Ajan B (Denetçi) bu olayı dinleyerek asistanı yönlendirir.
+## 2. Sorumluluklar (Responsibilities)
+*   Olayları tanımlamak (`OnTaskStart`, `OnEvidenceFound`, `OnConfidenceLow`, `OnArchitectureViolation`, `OnReflectionFailed`, `OnTaskComplete`).
+*   Olayların taşıyacağı bağlam (context) verilerini paketlemek.
+
+---
+
+## 3. Girdiler (Inputs)
+*   Modüllerden gelen olay tetikleme sinyalleri.
+*   Hata logları, test sonuçları, dosya yolları.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Olay dinleyicilere (listeners) yönlendirilen event nesneleri.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `runtime/orchestrator.md`
+*   `runtime/scheduler.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Olay Bağlamı**: Her olay mutlaka fırlatıldığı andaki hata detayını veya durum bilgisini beraberinde taşımak zorundadır.
+*   **Öncelik**: Kritik olaylar (Örn: `OnArchitectureViolation`) scheduler tarafından en yüksek öncelikle işlenmelidir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Olay Kaybı*: Fırlatılan bir olay orkestratör tarafından yakalanamazsa sistem varsayılan olarak güvenli duruşa (fail-safe) geçer.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Olay*: `OnConfidenceLow`
+*   *İçerik*: `{ taskId: 123, confidence: 55, reason: "Yetki belirsiz" }`
+*   *Aksiyon*: Soru motoru tetiklenir.

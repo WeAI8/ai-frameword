@@ -1,28 +1,49 @@
-# Güven Puanı ve Karar Eşiği (Confidence & Decision Threshold)
-
-Ajan, yaptığı her varsayımı belgelendirmeli ve varsayımların doğruluğuna dair güven seviyesini sayısal olarak hesaplamalıdır. Karar eşiği aşılmadan kodlama fazına geçilemez.
+# Güven Puanı ve Karar Eşiği (core/decision/confidence.md)
 
 ---
 
-## 1. Güven Seviyesi Hesaplama Metrikleri
-
-Her varsayım için güven puanı (0-100%) aşağıdaki kriterlere göre hesaplanır:
-
-*   **Doğrudan Kanıt (Direct Evidence) [+50 Puan]**: Codebase içinde varsayımı doğrudan doğrulayan çalışan bir kod veya yapılandırma dosyası varlığı.
-*   **Benzerlik Kanıtı (Analogy Evidence) [+30 Puan]**: Projede birebir aynı olmasa da çok benzer bir modülün/kod yapısının kullanılması.
-*   **Çıkarım (Logical Inference) [+10 Puan]**: Projedeki genel isimlendirme ve standartlardan yapılan mantıksal çıkarım.
-*   **Belge/Yorum Satırı Kanıtı [+10 Puan]**: Kod içindeki javadoc veya dokümantasyon bilgileri.
+## 1. Amaç (Purpose)
+Ajanın varsayımlarını sayısal olarak puanlamak, belirsizlik seviyesine göre akıllı soruları veya ek kanıt taramalarını tetiklemek.
 
 ---
 
-## 2. Karar Eşiği Politikası (Decision Threshold)
+## 2. Sorumluluklar (Responsibilities)
+*   Her varsayım için güven derecesi (%0 - %100) hesaplamak.
+*   Ortalama güven puanına göre karar eşiğini (Decision Threshold) denetlemek.
 
-Toplam güven puanı, ajanın bir sonraki adıma geçip geçmeyeceğini belirler:
+---
 
-| Ortalama Güven Puanı | Durum | Aksiyon (Action) |
-| :--- | :--- | :--- |
-| **%80 ve üzeri** | **YÜKSEK GÜVEN** | Karar eşiği geçilmiştir. Kullanıcıyı gereksiz sorularla yormadan doğrudan planlama ve kodlama fazına geç. |
-| **%70 - %79 arası** | **ORTA GÜVEN** | Kanıt motorunu (`core/decision/evidence.md`) tekrar çalıştırarak ek kanıt ara. Puanı yükseltmeye çalış. |
-| **%70'in altı** | **DÜŞÜK GÜVEN** | Karar eşiğinin altında kalınmıştır. Akıllı Soru Motorunu (`core/decision/question-engine.md`) tetikle ve kullanıcıdan netleştirme iste. |
+## 3. Girdiler (Inputs)
+*   Ajanın varsayımları listesi.
+*   `evidence.md` tarafından sağlanan kanıtların güç puanı.
 
-*   **Önemli Kural**: Ajan, güven seviyesi %70'in altında olan kritik bir varsayımla kodlama yapmaya kalkışamaz. Bu durumda `runtime/events.md` üzerinden `OnConfidenceLow` olayı tetiklenir.
+---
+
+## 4. Çıktılar (Outputs)
+*   Varsayım Güven Skoru listesi.
+*   Ortalama Güven Seviyesi.
+*   Tetikleme durumları (Örn: `OnConfidenceLow` olayı).
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `core/decision/evidence.md`
+*   `metrics/confidence-score.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Baraj Puanı**: Ortalama güven puanı **%70**'in altında kalan kritik konularda kullanıcıdan onay almadan kodlama aşamasına geçilemez.
+*   **Kanıt Ağırlığı**: Kanıt türüne göre varsayım puanına ek ağırlıklar verilmelidir (Doğrudan kanıt: 1.0, Dolaylı: 0.6).
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Çıkarım Yetersizliği*: Puan %70'in altında kaldığında soru motoruna geçilemezse, orkestratör akışı acil durdurma statüsüne geçirir.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Varsayım*: "Kullanıcı tablosuna email alanı eklenecek."
+*   *Kanıt*: `f:/database.sql` dosyasında `users` tablosu var (Doğrudan Kanıt).
+*   *Güven Puanı*: `%95` (Eşik geçildi).

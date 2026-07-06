@@ -1,32 +1,50 @@
-# Runtime Orkestratörü (Orchestrator Engine)
-
-Orchestrator, framework'ün karar alma ve uygulama akışını yöneten, döngüsel (iterative) süreçleri kontrol eden ve hatalarda geri alma (rollback) kararı veren **çalışma zamanı beynidir**.
+# Runtime Orkestratörü (runtime/orchestrator.md)
 
 ---
 
-## 1. Orkestrasyon Akışı (Execution Management)
-
-Orkestratör, `core/kernel/thinking-pipeline.md` adımlarını ve `runtime/lifecycle.md` OODA (Observe-Orient-Decide-Act) döngüsünü koordine eder. Çalışma sırası şudur:
-
-1.  **Observe (Gözlem)**: Proje durumunu ve girdiyi analiz et.
-2.  **Orient (Konumlan)**: Kanıtları ve bağımlılıkları belirle.
-3.  **Decide (Karar Al)**: Güven puanına göre teknik planı üret.
-4.  **Act (Uygula)**: Kodu yaz ve test et.
-5.  **Measure (Ölç)**: Metrik katmanını (`metrics/`) çalıştır.
-6.  **Evaluate (Değerlendir)**: Sonuç başarılı ise tamamla, başarısız ise geri al (Rollback).
+## 1. Amaç (Purpose)
+Ajanın tüm karar alma, doğrulama ve kodlama süreçlerini koordine etmek; OODA Loop döngülerini ve metrik bazlı rollback (geri alma) adımlarını yönetmek.
 
 ---
 
-## 2. Geri Bildirim ve Rollback Yönetimi (Feedback Loops)
-
-Orkestratör, **aktif metriklerden gelen girdilere göre** dinamik kararlar alır:
-
-*   **Birim Test Başarısızlığı**: Eğer `metrics/quality.md` veya test çıktılarında başarısızlık tespit edilirse, `runtime/events.md` üzerinden `OnReflectionFailed` olayı fırlatılır. Orkestratör akışı durdurur, durumu `Implementing` aşamasına geri çeker (Rollback) ve `runtime/recovery.md` kurtarma motorunu çalıştırır.
-*   **Mimari Aşınma Skoru < 80**: `metrics/architecture-score.md` 80'in altına düşerse, `OnArchitectureViolation` olayı tetiklenir. Orkestratör kod değişikliklerini geri alır ve planlama (`Planning`) durumuna geri döner.
+## 2. Sorumluluklar (Responsibilities)
+*   Düşünme işlem hattı ve OODA Loop geçişlerini çalıştırmak.
+*   Aktif metriklerden gelen girdilere göre rollback veya recovery tetiklemek.
+*   Loop Guard (iterasyon koruyucusu) sayacını yönetmek.
 
 ---
 
-## 3. İterasyon Limiti (Loop Guard)
-*   Sonsuz kısırdöngüleri önlemek için orkestratör her geri paslama işleminde bir sayaç tutar.
-*   Bir görev için maksimum geri paslama/düzeltme döngüsü **3**'tür.
-*   3. denemeden sonra da metrikler başarısız kalırsa, orkestratör akışı keser (`runtime/events.md` -> `OnTaskComplete` hata ile tetiklenir) ve kontrolü kullanıcıya bırakır.
+## 3. Girdiler (Inputs)
+*   Yaşam döngüsü durumları (`runtime/lifecycle.md`).
+*   Metrik sonuçları (`metrics/`).
+*   Olay bildirimleri (`runtime/events.md`).
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Çalıştırma ve duraklatma sinyalleri.
+*   Rollback/Recovery komutları.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `runtime/lifecycle.md`
+*   `runtime/events.md`
+*   `runtime/recovery.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Metrik Güdümlü**: Metrik sonuçları eşiklerin altında kalırsa orkestratör derhal rollback işlemini tetiklemek zorundadır.
+*   **Döngü Sınırı**: Aynı görev üzerinde en fazla **3** hata düzeltme iterasyonuna izin verilir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Sonsuz Kısırdöngü*: İterasyon sayacı 3'ü aşarsa orkestratör `OnTaskComplete` olayını hata bilgisiyle tetikleyerek akışı keser ve kontrolü kullanıcıya bırakır.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Senaryo*: Kod testi başarısız olur (`metrics/quality.md` hata verir).
+*   *Aksiyon*: Orkestratör `OnReflectionFailed` olayını fırlatır, durumu `Implementing` aşamasına geri çeker ve recovery motorunu çalıştırır.

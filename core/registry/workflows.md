@@ -1,23 +1,43 @@
-# İş Akışları Kayıt Defteri (Workflows Registry)
-
-Bu belge, **AI Engineering Decision Framework** içindeki aktif iş akışlarını (workflows), dosya konumlarını ve hangi durumlarda çalışacaklarını tanımlar.
+# İş Akışları Kayıt Defteri (core/registry/workflows.md)
 
 ---
 
-## 1. Kayıtlı İş Akışları (Workflows)
-
-| İş Akışı Adı | Dosya Yolu | İlgili Kabiliyet | Açıklama |
-| :--- | :--- | :---: | :--- |
-| **feature-workflow** | `workflows/feature-analysis.md` | `Feature` | Yeni özelliklerin analiz, planlama ve uygulama süreci. |
-| **bug-workflow** | `workflows/bug-investigation.md` | `Bug` | Hataların teşhisi, log analizi ve düzeltme akışı. |
-| **refactor-workflow**| `workflows/refactor.md` | `Refactor` | Geriye dönük uyumluluk korumalı temizleme akışı. |
-| **review-workflow** | `workflows/code-review.md` | `Review` | Çıktıların mimari, güvenlik ve kalite denetimi. |
-| **test-workflow** | `workflows/testing.md` | `Test` | Test kapsama alanı ve mock standartları akışı. |
-| **doc-workflow** | `workflows/documentation.md` | `Doc` | Belgelendirme ve conventional commit standartları. |
-| **coordination-workflow** | `workflows/multi-agent-coordination.md` | Çoklu Ajan | Uzman ajanların tetiklenme ve geri paslama döngüsü. |
+## 1. Amaç (Purpose)
+Decision Runtime bünyesindeki tüm iş akışlarının (workflows) konumlarını ve çalışma kurallarını merkezi olarak kaydetmek.
 
 ---
 
-## 2. Çalışma Zamanı Yönlendirmesi
-*   Önyükleyici, görev sınıflandırması bittikten sonra bu kayıt defterini kullanarak ilgili `.md` iş akışını yükler.
-*   Görev süresince bu dosyada belirtilen adımlar harfiyen takip edilir.
+## 2. Sorumluluklar (Responsibilities)
+*   Sistemde tanımlı olan iş akışı dosyalarının (`workflows/`) katalog yönetimini yapmak.
+*   Görev tiplerine uygun doğru `.md` akışını seçip yükleyiciye iletmek.
+
+---
+
+## 3. Girdiler (Inputs)
+*   Kabiliyet kayıt sorgusu.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Seçilen iş akışı dosya yolu ve tanımı.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   Yok.
+
+---
+
+## 6. Kurallar (Rules)
+*   **Kayıt Zorunluluğu**: Yeni bir iş akışı oluşturulduğunda bu deftere kaydedilmelidir.
+*   **İzole Çalışma**: Her iş akışı bağımsız bir dosya olmalı ve diğer akışların içsel mantığına müdahale etmemelidir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Dosya Yok Hatası*: Defterde tanımlı olan iş akışı dosyası fiziksel olarak bulunamazsa varsayılan akışa geçilir veya hata verilir.
+
+---
+
+## 8. Örnekler (Examples)
+*   *İş Akışı*: `coordination-workflow` -> `workflows/multi-agent-coordination.md`

@@ -1,35 +1,47 @@
-# Aktif Kanıt Motoru (Evidence Engine)
-
-Kanıt Motoru, ajanın kendi fikirlerine veya tahminlerine dayanarak kod yazmasını engeller. Önerilen her teknik çözümün, projenin mevcut kod yapısında çalışan bir örneği (kanıtı) bulunmalıdır.
+# Aktif Kanıt Motoru (core/decision/evidence.md)
 
 ---
 
-## 1. Aktif Kanıt Sorgulama Süreci (Evidence Gathering)
-
-Ajan, bir karara varmadan önce şu kaynakları aktif olarak sorgulamak zorundadır:
-
-1.  **Codebase Sorgusu (Static Code Search)**:
-    *   Tasarım kalıpları, isimlendirme standartları ve veritabanı sorgu tarzları için mevcut kod dosyalarını tara.
-2.  **Hafıza Sorgusu (Memory Query)**:
-    *   Aktif hafıza yöneticisinden (`memory/strategy.md`) geçmiş konuşmalarda yapılmış benzer seçimleri, onaylanmış mimari kararları ve şablonları sorgula.
-3.  **Teknoloji Sürücüsü Sorgusu (Driver Query)**:
-    *   `technology/` altındaki ilgili dosyanın (Örn: `oracle.md`) kısıtlamalarını oku.
+## 1. Amaç (Purpose)
+Ajanın önerdiği çözümleri, projenin mevcut kod yapısında veya aktif belleğinde çalışan somut örneklerle (kanıtlarla) temellendirmek.
 
 ---
 
-## 2. Kanıt Derecelendirme (Evidence Grading)
-
-Toplanan kanıtlar güçlerine göre sınıflandırılır:
-
-*   **Güçlü Kanıt (Strong Evidence)**:
-    *   Mevcut projede çalışan, test edilmiş, aynı teknoloji yığınında (Örn: Spring Controller) birebir benzer işlevdeki kod bloğu.
-*   **Zayıf Kanıt (Weak Evidence)**:
-    *   Farklı bir teknoloji yığınında yazılmış (Örn: Java yerine Javascript) veya sadece dokümantasyonda geçen ama kodda örneği olmayan yapılar.
+## 2. Sorumluluklar (Responsibilities)
+*   Codebase ve aktif bellek (`memory/`) üzerinde benzer kod kalıplarını taramak.
+*   Kanıtları güç derecelerine (Strong / Weak) göre sınıflandırmak.
 
 ---
 
-## 3. Kanıt Belgelendirme Sözleşmesi
+## 3. Girdiler (Inputs)
+*   Önerilen teknik çözüm taslağı.
+*   `memory/strategy.md` bellek sorgu sonuçları.
 
-Toplanan tüm kanıtlar planlama aşamasında şu formatta listelenmelidir:
-*   *Kanıt A*: `[Dosya Yolu#Satır Numarası]` -> *[Bu kodun önerilen çözümü destekleme gerekçesi]*
-*   *Kanıt B*: `[Bellek ID'si / Karar Geçmişi]` -> *[Daha önce onaylanmış benzer karar detayı]*
+---
+
+## 4. Çıktılar (Outputs)
+*   Sınıflandırılmış Kanıt Listesi (Dosya yolları ve satır numaralarıyla).
+*   Güven Puanına aktarılacak Kanıt Derece Katsayıları.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `memory/strategy.md`
+*   `heuristics/context-budget.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Kanıtsız Öneri Yasağı**: Projede benzer bir örneği bulunmayan teknik çözümler "Zayıf Kanıt" olarak işaretlenmeli ve güven puanı düşürülmelidir.
+*   **Arama Bütçesi Sınırı**: Kanıt arama işlemi `context-budget.md` limitlerini aşmamalıdır.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Kanıt Bulunamaması*: Hiçbir benzer yapı bulunamazsa durum `Unknown` olarak işaretlenir ve kullanıcıya soru sorulması için tetikleme yapılır.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Çözüm*: REST Controller yazılması isteniyor.
+*   *Kanıt*: `f:/src/controllers/ProductController.java` (Güçlü Kanıt - standartları taklit etmek için kullanılır).

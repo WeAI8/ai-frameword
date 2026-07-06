@@ -1,33 +1,47 @@
-# Ajan Zamanlayıcı (Runtime Scheduler)
-
-Zamanlayıcı (Scheduler), çoklu ajan (multi-agent) çalışma senaryolarında hangi ajanın ne zaman çalışacağını, hangi ajanın beklemede kalacağını ve görevlerin yürütülme önceliklerini yöneten kuyruk yöneticisidir.
+# Ajan Zamanlayıcı (runtime/scheduler.md)
 
 ---
 
-## 1. Görev Önceliklendirme ve Ajan Kuyruğu (Task Queuing)
-
-Çoklu ajan iş akışlarında ajanlar sırayla kuyruğa alınır ve scheduler tarafından tetiklenir:
-
-```text
-Girdi ──> [Analyst Queue] ──> [Architect Queue] ──> [Developer Queue] ──> [Reviewer Queue]
-```
-
-*   **Öncelik Kuralı (Execution Order)**:
-    1.  *Yüksek Öncelik*: Kullanıcı kesintileri (User input / interrupts).
-    2.  *Orta Öncelik*: Hata düzeltme ve geri bildirim döngüleri (Rollback/Recovery).
-    3.  *Normal Öncelik*: Standart ileri akış görevleri (Analiz -> Geliştirme).
+## 1. Amaç (Purpose)
+Ajanların ve kuyruğa giren görevlerin (tasks) çalışma sıralarını, önceliklerini ve paralel iş dağıtımlarını yönetmek.
 
 ---
 
-## 2. Kesinti ve Öncelik Devralma (Interrupt Priority)
+## 2. Sorumluluklar (Responsibilities)
+*   Ajan kuyruğunu (Analyst -> Architect -> Developer -> Reviewer) yönetmek.
+*   Olaylara göre (OnConfidenceLow, OnArchitectureViolation) öncelikleri dinamik olarak değiştirmek.
+*   Bağımsız alt görevleri paralel ajanlara dağıtmak.
 
-Çalışma zamanında bir olay (Event) tetiklendiğinde scheduler ajanların önceliğini dinamik olarak değiştirir:
+---
 
-*   **OnConfidenceLow Tetiklendiğinde**:
-    *   `Developer` ve `Architect` ajanlar askıya alınır (Suspended).
-    *   `Analyst` ajan en yüksek önceliğe getirilir ve kullanıcıyla iletişime geçer.
-*   **OnArchitectureViolation Tetiklendiğinde**:
-    *   `Developer` ajanın yetkileri dondurulur.
-    *   `Architect` ajan acil öncelikle (Emergency Priority) kuyruğa alınır ve mimariyi düzeltmek için planı revize eder.
-*   **Paralel Görev Yönetimi**:
-    *   Scheduler, bağımsız alt görevleri (`heuristics/multi-agent-rules.md` doğrultusunda) aynı anda paralel olarak farklı alt ajanlara dağıtabilir.
+## 3. Girdiler (Inputs)
+*   Olay bildirimleri (`runtime/events.md`).
+*   Ajan havuzu durum bilgisi.
+
+---
+
+## 4. Çıktılar (Outputs)
+*   Tetikleme ve askıya alma (Suspend/Resume) sinyalleri.
+
+---
+
+## 5. Bağımlılıklar (Dependencies)
+*   `runtime/events.md`
+*   `heuristics/multi-agent-rules.md`
+
+---
+
+## 6. Kurallar (Rules)
+*   **Kritik Öncelik**: Geri alma ve kurtarma olayları, standart geliştirme görevlerinin önüne geçirilerek en yüksek öncelikle kuyruğa alınmalıdır.
+*   **Kaynak Sınırı**: Ajanlar arası kaynak çakışmasını önlemek için paralel işlerde dosya kilitleri (file locks) denetlenmelidir.
+
+---
+
+## 7. Hata Durumları (Failure Cases)
+*   *Kilitlenme (Deadlock)*: İki ajan birbirinin kaynağını beklerse scheduler kilitlenmeyi çözer, görevlerden birini iptal eder ve geri alır.
+
+---
+
+## 8. Örnekler (Examples)
+*   *Olay*: `OnConfidenceLow`
+*   *Aksiyon*: Developer ajan askıya alınır, Analyst ajana yüksek öncelik verilerek çalıştırılır.
